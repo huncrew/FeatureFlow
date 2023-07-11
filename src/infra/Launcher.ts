@@ -11,7 +11,7 @@ const footballData = new DataStack(app, 'DataStack');
 
 // instantiate the lambda stack object, assign it to the lambdaStack variable
 const lambdaStack = new LambdaStack(app, 'LambdaStack', {
-  footballDataTable: footballData.footballUsersTable;
+  footballDataTable: footballData.footballUsersTable
 });
 
 // we pass the helloLambda Function as props to the Api stack, so it can connect that to the API stack.
