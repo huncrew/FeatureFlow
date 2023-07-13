@@ -16,6 +16,6 @@ const lambdaStack = new LambdaStack(app, 'LambdaStack', {
 
 // we pass the helloLambda Function as props to the Api stack, so it can connect that to the API stack.
 new ApiStack(app, 'ApiStack', {
-  helloLambdaIntegration: lambdaStack.helloLambdaIntegration
+  footballLambdaIntegration: lambdaStack.footballLambdaIntegration
 })
 

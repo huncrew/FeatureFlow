@@ -13,29 +13,28 @@ interface FootBallTable extends StackProps {
 
 export class LambdaStack extends Stack {
 
-  public readonly helloLambdaIntegration: LambdaIntegration;
+  public readonly footballLambdaIntegration: LambdaIntegration;
 
   constructor(scope: Construct, id: string, props: FootBallTable) {
     super(scope, id, props);
     
-    const helloLambda = new NodejsFunction(this, 'HelloLambda', {
+    const footballLambda = new NodejsFunction(this, 'footballLambda', {
       runtime: Runtime.NODEJS_18_X,
       handler: 'handler',
-      entry: (join(__dirname, '..', '..', 'services', 'hello.ts')),
+      entry: (join(__dirname, '..', '..', 'services', 'football', 'handler.ts')),
       environment: {
         TABLE_NAME: props.footballDataTable.tableName
       }
     });
 
-    helloLambda.addToRolePolicy(new PolicyStatement({
+    footballLambda.addToRolePolicy(new PolicyStatement({
       effect: Effect.ALLOW,
+      resources: [props.footballDataTable.tableArn],
       actions: [
-        's3:ListAllMyBuckets',
-        's3:ListBucket'
-      ],
-      resources: ["*"]
+        'dynamodb:PutItem'
+      ]
     }))
 
-    this.helloLambdaIntegration = new LambdaIntegration(helloLambda);
+    this.footballLambdaIntegration = new LambdaIntegration(footballLambda);
   }
 }

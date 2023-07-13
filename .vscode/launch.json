@@ -7,7 +7,17 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "debug local file"
+      "name": "debug local file",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${relativeFile}"
+      ],
+      "env": {
+        "AWS_REGION": "eu-west-2"
+      }
     }
   ]
 }
