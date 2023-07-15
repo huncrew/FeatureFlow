@@ -1,4 +1,4 @@
-import { handler } from "../src/services/hello";
+import { handler } from "../src/services/football/handler";
 
 
 
