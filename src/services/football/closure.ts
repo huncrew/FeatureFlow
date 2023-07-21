@@ -12,9 +12,11 @@ function dale(x?: number): void {
 function add(n: number) {
   let number: number = n; // because its declared in the outer scope, i can access even using 'let'
 
-  return function() {
-    number += 1;
-    console.log(number)
+  return {
+    addCount() { // this syntax is because its a method to an object -- this way I can return multiple functions
+      number += 1;
+      console.log(number);
+    }
   }
 }
 
@@ -28,8 +30,10 @@ Because of how javascript works, when we assign a function to a variable, we ass
 */ 
 
 var closure = add(1);
-closure();
-closure();
+closure.addCount();
+closure.addCount();
+
+
 
 
 
