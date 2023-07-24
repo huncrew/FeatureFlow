@@ -1,0 +1,318 @@
+{
+  "version": "32.0.0",
+  "artifacts": {
+    "DataStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "DataStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "DataStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "DataStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/8e63de3ab81395340c6851797575c0c83defe18164ec761a0a8e2b898785a80e.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "DataStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "DataStack.assets"
+      ],
+      "metadata": {
+        "/DataStack/FootballUsers": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "FootballUsers930F63A9"
+            }
+          }
+        ],
+        "/DataStack/FootballUsers/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballUsers930F63A9"
+          }
+        ],
+        "/DataStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/DataStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/DataStack/Exports/Output{\"Fn::GetAtt\":[\"FootballUsers930F63A9\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttFootballUsers930F63A9Arn14AFFE4F"
+          }
+        ],
+        "/DataStack/Exports/Output{\"Ref\":\"FootballUsers930F63A9\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefFootballUsers930F63A913FB9610"
+          }
+        ],
+        "/DataStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/DataStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "DataStack"
+    },
+    "LambdaStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "LambdaStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "LambdaStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "LambdaStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/71dce83a80c84bb8379687d79b31ad41163f11dec9a8ef05b7bdce4c5e7d9480.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "LambdaStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "DataStack",
+        "LambdaStack.assets"
+      ],
+      "metadata": {
+        "/LambdaStack/footballLambda/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "footballLambdaServiceRole356B2B7F"
+          }
+        ],
+        "/LambdaStack/footballLambda/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "footballLambdaServiceRoleDefaultPolicy67BCB0E1"
+          }
+        ],
+        "/LambdaStack/footballLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "footballLambda869B05B1"
+          }
+        ],
+        "/LambdaStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/LambdaStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/LambdaStack/Exports/Output{\"Fn::GetAtt\":[\"footballLambda869B05B1\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttfootballLambda869B05B1ArnF6305A91"
+          }
+        ],
+        "/LambdaStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/LambdaStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "LambdaStack"
+    },
+    "ApiStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ApiStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ApiStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ApiStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/9000d5475be81772c797cfbc163cdea788137063927a3a6473937a83fd43eab6.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ApiStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "LambdaStack",
+        "ApiStack.assets"
+      ],
+      "metadata": {
+        "/ApiStack/FootballApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApi1C38B5F0"
+          }
+        ],
+        "/ApiStack/FootballApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApiCloudWatchRoleEB51766C"
+          }
+        ],
+        "/ApiStack/FootballApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApiAccount7A84230A"
+          }
+        ],
+        "/ApiStack/FootballApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApiDeployment646EE00E76a21b98d9ca3a4fa3d538f79d355a29"
+          }
+        ],
+        "/ApiStack/FootballApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApiDeploymentStageprodC27A046B"
+          }
+        ],
+        "/ApiStack/FootballApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApiEndpointC544A478"
+          }
+        ],
+        "/ApiStack/FootballApi/Default/football/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApifootball5CE1BD59"
+          }
+        ],
+        "/ApiStack/FootballApi/Default/football/GET/ApiPermission.ApiStackFootballApiB06ECF18.GET..football": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApifootballGETApiPermissionApiStackFootballApiB06ECF18GETfootball52CEBB11"
+          }
+        ],
+        "/ApiStack/FootballApi/Default/football/GET/ApiPermission.Test.ApiStackFootballApiB06ECF18.GET..football": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApifootballGETApiPermissionTestApiStackFootballApiB06ECF18GETfootballCCFA7F9E"
+          }
+        ],
+        "/ApiStack/FootballApi/Default/football/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApifootballGETF347AFB4"
+          }
+        ],
+        "/ApiStack/FootballApi/Default/football/POST/ApiPermission.ApiStackFootballApiB06ECF18.POST..football": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApifootballPOSTApiPermissionApiStackFootballApiB06ECF18POSTfootball59F3CC10"
+          }
+        ],
+        "/ApiStack/FootballApi/Default/football/POST/ApiPermission.Test.ApiStackFootballApiB06ECF18.POST..football": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApifootballPOSTApiPermissionTestApiStackFootballApiB06ECF18POSTfootball6E7C6460"
+          }
+        ],
+        "/ApiStack/FootballApi/Default/football/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FootballApifootballPOSTCE21C564"
+          }
+        ],
+        "/ApiStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ApiStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ApiStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ApiStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ApiStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

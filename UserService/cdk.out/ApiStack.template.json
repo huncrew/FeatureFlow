@@ -1,0 +1,623 @@
+{
+ "Resources": {
+  "FootballApi1C38B5F0": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Name": "FootballApi"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Resource"
+   }
+  },
+  "FootballApiCloudWatchRoleEB51766C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/CloudWatchRole/Resource"
+   }
+  },
+  "FootballApiAccount7A84230A": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "FootballApiCloudWatchRoleEB51766C",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "FootballApi1C38B5F0"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Account"
+   }
+  },
+  "FootballApiDeployment646EE00E76a21b98d9ca3a4fa3d538f79d355a29": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "FootballApi1C38B5F0"
+    },
+    "Description": "Automatically created by the RestApi construct"
+   },
+   "DependsOn": [
+    "FootballApifootballGETF347AFB4",
+    "FootballApifootballPOSTCE21C564",
+    "FootballApifootball5CE1BD59"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Deployment/Resource"
+   }
+  },
+  "FootballApiDeploymentStageprodC27A046B": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "FootballApi1C38B5F0"
+    },
+    "DeploymentId": {
+     "Ref": "FootballApiDeployment646EE00E76a21b98d9ca3a4fa3d538f79d355a29"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "FootballApiAccount7A84230A"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "FootballApifootball5CE1BD59": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "FootballApi1C38B5F0",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "football",
+    "RestApiId": {
+     "Ref": "FootballApi1C38B5F0"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Default/football/Resource"
+   }
+  },
+  "FootballApifootballGETApiPermissionApiStackFootballApiB06ECF18GETfootball52CEBB11": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "LambdaStack:ExportsOutputFnGetAttfootballLambda869B05B1ArnF6305A91"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "FootballApi1C38B5F0"
+       },
+       "/",
+       {
+        "Ref": "FootballApiDeploymentStageprodC27A046B"
+       },
+       "/GET/football"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Default/football/GET/ApiPermission.ApiStackFootballApiB06ECF18.GET..football"
+   }
+  },
+  "FootballApifootballGETApiPermissionTestApiStackFootballApiB06ECF18GETfootballCCFA7F9E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "LambdaStack:ExportsOutputFnGetAttfootballLambda869B05B1ArnF6305A91"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "FootballApi1C38B5F0"
+       },
+       "/test-invoke-stage/GET/football"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Default/football/GET/ApiPermission.Test.ApiStackFootballApiB06ECF18.GET..football"
+   }
+  },
+  "FootballApifootballGETF347AFB4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "GET",
+    "ResourceId": {
+     "Ref": "FootballApifootball5CE1BD59"
+    },
+    "RestApiId": {
+     "Ref": "FootballApi1C38B5F0"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "LambdaStack:ExportsOutputFnGetAttfootballLambda869B05B1ArnF6305A91"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Default/football/GET/Resource"
+   }
+  },
+  "FootballApifootballPOSTApiPermissionApiStackFootballApiB06ECF18POSTfootball59F3CC10": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "LambdaStack:ExportsOutputFnGetAttfootballLambda869B05B1ArnF6305A91"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "FootballApi1C38B5F0"
+       },
+       "/",
+       {
+        "Ref": "FootballApiDeploymentStageprodC27A046B"
+       },
+       "/POST/football"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Default/football/POST/ApiPermission.ApiStackFootballApiB06ECF18.POST..football"
+   }
+  },
+  "FootballApifootballPOSTApiPermissionTestApiStackFootballApiB06ECF18POSTfootball6E7C6460": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "LambdaStack:ExportsOutputFnGetAttfootballLambda869B05B1ArnF6305A91"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "FootballApi1C38B5F0"
+       },
+       "/test-invoke-stage/POST/football"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Default/football/POST/ApiPermission.Test.ApiStackFootballApiB06ECF18.POST..football"
+   }
+  },
+  "FootballApifootballPOSTCE21C564": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "POST",
+    "ResourceId": {
+     "Ref": "FootballApifootball5CE1BD59"
+    },
+    "RestApiId": {
+     "Ref": "FootballApi1C38B5F0"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "LambdaStack:ExportsOutputFnGetAttfootballLambda869B05B1ArnF6305A91"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/FootballApi/Default/football/POST/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WPSw7CMAxEz8I+NZQNsOSzRSA4ADKJAZd8qiYFoap3xxAkYOU3o/FYHsN0AqMB3mOhzbWwfIRun1BflViHDms+Y6I7PqDbUUzzmtXy5H9wrnVofVIrqm14OBIU90dJ25leXgZZDW2jaYHxKz6dmdeULsG8rEy9YnRyPtick9kri+5oEERvqXEcIwff//Vt2lS36a9ZeBm84fQO+2AIqji8lTOYQjmoInPRyC/sCHZ5PgHnLldiHwEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "ApiStack/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "FootballApiEndpointC544A478": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "FootballApi1C38B5F0"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "FootballApiDeploymentStageprodC27A046B"
+      },
+      "/"
+     ]
+    ]
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-2"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

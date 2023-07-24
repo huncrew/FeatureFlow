@@ -1,0 +1,16 @@
+
+
+GET https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football
+###
+
+DELETE https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football?id=
+###
+
+POST https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football
+content-type: application/json
+
+{
+  "name": "Dale"
+}
+###
+
