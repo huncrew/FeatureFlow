@@ -3,6 +3,9 @@
 GET https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football
 ###
 
+DELETE https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football/37fbefb1-2e72-4454-a078-8df1ced5dc84
+###
+
 POST https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football
 content-type: application/json
 

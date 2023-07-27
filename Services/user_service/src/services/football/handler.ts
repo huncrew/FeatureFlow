@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda
 import { postFootball } from "./postFootball";
 import { getFootball } from "./getFootball";
 import { putFootball } from "./putFootball";
+import { deleteFootball } from "./deleteFootball";
 
 const dynamodbClient = new DynamoDBClient({})
 
@@ -22,6 +23,10 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
         const putResponse = await putFootball(event, dynamodbClient);
         console.log(putResponse);
         return putResponse;
+      case 'DELETE':
+        const deleteResponse = await deleteFootball(event, dynamodbClient);
+        console.log(deleteResponse);
+        return deleteResponse;
       default:
         break;
     }
