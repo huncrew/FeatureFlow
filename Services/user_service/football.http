@@ -3,7 +3,7 @@
 GET https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football
 ###
 
-DELETE https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football/37fbefb1-2e72-4454-a078-8df1ced5dc84
+DELETE https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football?id=37fbefb1-2e72-4454-a078-8df1ced5dc84
 ###
 
 POST https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football
@@ -14,3 +14,10 @@ content-type: application/json
 }
 ###
 
+PUT https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football?id=e3b73f0a-d961-4f11-bc28-8b496d77edd9
+content-type: application/json
+
+{
+  "name": "HOUSE"
+}
+###
