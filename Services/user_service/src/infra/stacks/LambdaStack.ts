@@ -31,7 +31,11 @@ export class LambdaStack extends Stack {
       effect: Effect.ALLOW,
       resources: [props.footballDataTable.tableArn],
       actions: [
-        'dynamodb:PutItem'
+        'dynamodb:PutItem',
+        'dynamodb:Scan',
+        'dynamodb:GetItem',
+        'dynamodb:UpdateItem',
+        'dynamodb:DeleteItem'
       ]
     }))
 
