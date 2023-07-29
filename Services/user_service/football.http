@@ -14,10 +14,10 @@ content-type: application/json
 }
 ###
 
-PUT https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football?id=e3b73f0a-d961-4f11-bc28-8b496d77edd9
+PUT https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football?id=6dff407b-a74d-42ad-bdc2-3f5433103cdc
 content-type: application/json
 
 {
-  "name": "HOUSE"
+  "name": "ERIN BABY"
 }
 ###
