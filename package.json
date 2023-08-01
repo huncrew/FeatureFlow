@@ -9,5 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "workspaces": ["./Services/*"]
+  "workspaces": [
+    "./Services/*"
+  ],
+  "dependencies": {
+  }
 }
