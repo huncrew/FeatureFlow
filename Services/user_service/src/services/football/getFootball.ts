@@ -1,6 +1,7 @@
 import { DynamoDBClient, GetItemCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
 import { unmarshall } from "@aws-sdk/util-dynamodb"
+import middy from '@middy/core'
 
 export async function getFootball(event: APIGatewayProxyEvent, dynamodbClient: DynamoDBClient): Promise<APIGatewayProxyResult> {
 
