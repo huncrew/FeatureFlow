@@ -4,10 +4,12 @@ import { postFootball } from "./postFootball";
 import { getFootball } from "./getFootball";
 import { putFootball } from "./putFootball";
 import { deleteFootball } from "./deleteFootball";
+// middy imports
+import middy from '@middy/core';
 
 const dynamodbClient = new DynamoDBClient({})
 
-async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
+const lambdaHandler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
 
   let message: string;
 
@@ -45,5 +47,7 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
 
   return response;
 }
+
+const handler = middy().handler(lambdaHandler);
 
 export { handler };
