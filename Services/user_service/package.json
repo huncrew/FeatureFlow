@@ -30,6 +30,7 @@
     "@aws-sdk/client-dynamodb": "^3.369.0",
     "@middy/core": "^4.5.5",
     "@types/uuid": "^9.0.2",
+    "http-errors": "^2.0.0",
     "uuid": "^9.0.0"
   }
 }
