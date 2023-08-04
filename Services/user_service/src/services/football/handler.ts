@@ -48,6 +48,6 @@ const lambdaHandler = async (event: APIGatewayProxyEvent, context: Context): Pro
   return response;
 }
 
-const handler = middy().handler(lambdaHandler);
+const handler = middy(lambdaHandler);
 
 export { handler };
