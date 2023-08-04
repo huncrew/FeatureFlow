@@ -12,6 +12,7 @@
   "workspaces": [
     "./Services/*"
   ],
-  "dependencies": {
+  "devDependencies": {
+    "prettier": "3.0.1"
   }
 }
