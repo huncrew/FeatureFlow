@@ -1,0 +1,6 @@
+# Ignore Artifacts
+node_modules
+.vscode
+.env
+dist
+cdk.out

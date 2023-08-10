@@ -3,6 +3,6 @@ describe('Initial test suite', () => {
     // arrange step
     // act step
     // assert step
-    expect(true).toBeTruthy()
+    expect(true).toBeTruthy();
   });
 });

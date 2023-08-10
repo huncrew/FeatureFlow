@@ -3,7 +3,7 @@ import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
 
 interface ApiStackProps extends StackProps {
-  footballLambdaIntegration: LambdaIntegration
+  footballLambdaIntegration: LambdaIntegration;
 }
 
 export class ApiStack extends Stack {
@@ -14,6 +14,7 @@ export class ApiStack extends Stack {
     const footballResource = api.root.addResource('football');
     footballResource.addMethod('GET', props.footballLambdaIntegration);
     footballResource.addMethod('POST', props.footballLambdaIntegration);
-
+    footballResource.addMethod('PUT', props.footballLambdaIntegration);
+    footballResource.addMethod('DELETE', props.footballLambdaIntegration);
   }
 }

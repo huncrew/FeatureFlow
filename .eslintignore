@@ -1,0 +1,6 @@
+node_modules
+.vscode
+.env
+dist
+cdk.out
+commitlint.config.js

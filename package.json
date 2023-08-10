@@ -4,10 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .ts",
+    "format": "npx prettier . --write"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "workspaces": ["./Services/*"]
+  "workspaces": [
+    "./Services/*"
+  ],
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.46.0",
+    "husky": "^8.0.3",
+    "prettier": "3.0.1",
+    "typescript": "^5.1.6"
+  }
 }
