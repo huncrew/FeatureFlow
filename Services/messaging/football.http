@@ -1,0 +1,23 @@
+
+
+GET https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football
+###
+
+DELETE https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football?id=37fbefb1-2e72-4454-a078-8df1ced5dc84
+###
+
+POST https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football
+content-type: application/json
+
+{
+  "name": "Dale"
+}
+###
+
+PUT https://493jj1jomk.execute-api.eu-west-2.amazonaws.com/prod/football?id=6dff407b-a74d-42ad-bdc2-3f5433103cdc
+content-type: application/json
+
+{
+  "name": "ERIN BABY"
+}
+###
