@@ -1,8 +1,8 @@
 import { App, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { DataStack } from './stacks/DataStack';
-import { LambdaStack } from './stacks/LambdaStack';
-import { ApiStack } from './stacks/ApiStack';
+import { DataStack } from '../lib/stacks/DataStack';
+import { LambdaStack } from '../lib/stacks/LambdaStack';
+import { ApiStack } from '../lib/stacks/ApiStack';
 
 const app = new App();
 
