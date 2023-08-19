@@ -1,4 +1,4 @@
-import { handler } from '../src/services/football/handler';
+import { handler } from '../src/lambdas/football/handler';
 
 process.env.AWS_REGION = 'eu-west-2';
 process.env.TABLE_NAME = 'FootballStack-0a96e72d7ba2';
