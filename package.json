@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "workspaces": [
-    "./Services/*"
+    "services/messages"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
