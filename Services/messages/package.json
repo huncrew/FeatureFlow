@@ -29,8 +29,11 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.369.0",
     "@middy/core": "^4.5.5",
+    "@middy/http-router": "^4.6.0",
     "@types/uuid": "^9.0.2",
+    "abbrev": "^2.0.0",
     "http-errors": "^2.0.0",
+    "twilio": "^4.15.0",
     "uuid": "^9.0.0"
   }
 }
