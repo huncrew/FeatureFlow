@@ -1,20 +1,17 @@
 // use middy
 
 import middy from '@middy/core';
-import httpRouterHandler, { Route } from '@middy/http-router';
 import * as twilio from 'twilio';
 
 
 // credentials (move to env)
 const accountSid = 'AC3eaaeea1e9485e5d724d930e2d126afb';
-const authToken = '[AuthToken]';
+const authToken = '178abd6ffec718871057b2cebfc9c3cd';
 const client = new twilio.Twilio(accountSid, authToken);
 
 
-
-
 const lambdaHandler = async () => {
-    client.messages
+   await client.messages
     .create({
         body: 'hello',
         from: '+447480802337',
@@ -29,15 +26,5 @@ const lambdaHandler = async () => {
   };
 };
 
-const handlerMiddy = middy().handler(lambdaHandler);
-
-const routes: Route<object>[] = [
-  {
-    method: 'GET',
-    path: 'sms',
-    handler: handlerMiddy,
-  },
-];
-
-export const handler = middy().handler(httpRouterHandler(routes));
+export const handler = middy().handler(lambdaHandler);
 
