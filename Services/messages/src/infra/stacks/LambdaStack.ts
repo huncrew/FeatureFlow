@@ -24,7 +24,7 @@ export class LambdaStack extends Stack {
     const footballLambda = new NodejsFunction(this, 'footballLambda', {
       runtime: Runtime.NODEJS_18_X,
       handler: 'handler',
-      entry: join(__dirname, '..', '..', 'services', 'football', 'handler.ts'),
+      entry: join(__dirname, '..', '..', 'lambdas', 'sms', 'handler.ts'),
       environment: {
         TABLE_NAME: props.footballDataTable.tableName,
       },
