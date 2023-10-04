@@ -1,5 +1,11 @@
-export const authCallback: APIGatewayProxyHandler = async (event, _context) => {
-  const { code } = event.queryStringParameters;
+const ETSY_CLIENT_ID = process.env.ETSY_CLIENT_ID;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const ETSY_CLIENT_SECRET = process.env.ETSY_CLIENT_SECRET;
+import { APIGatewayProxyHandler } from "aws-lambda";
+import axios from "axios";
+
+export const authCallback: APIGatewayProxyHandler = async (event, context) => {
+  const code = event.queryStringParameters?.code
 
   try {
       const response = await axios.post('https://api.etsy.com/v3/oauth/token', null, {
