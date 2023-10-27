@@ -14,11 +14,11 @@ export class LambdaStack extends Stack {
         super(scope, id, props);
 
         this.authHandler = new NodejsFunction(this, 'EtsyAuthHandler', {
-            entry: `${props.lambdaCodePath}/authHandler.ts`,
+            entry: `${props.lambdaCodePath}/initiate-auth/index.ts`,
         });
 
         this.authCallbackHandler = new NodejsFunction(this, 'EtsyAuthCallbackHandler', {
-            entry: `${props.lambdaCodePath}/authCallbackHandler.ts`,
+            entry: `${props.lambdaCodePath}/callback-auth/index.ts`,
         });
     }
 }

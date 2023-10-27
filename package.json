@@ -12,8 +12,7 @@
   "author": "",
   "license": "ISC",
   "workspaces": [
-    "services/auth-service",
-    "services/databreakdown-service"
+    "services/auth-service"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
