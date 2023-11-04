@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
-    "format": "npx prettier . --write"
+    "format": "npx prettier . --write",
+    "deploy": "npm run deploy --workspaces --if-present"
   },
   "keywords": [],
   "author": "",

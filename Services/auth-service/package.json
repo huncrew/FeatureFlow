@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "cdk-deploy": "npx cdk deploy --all"
+    "deploy": "npx cdk deploy --all"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@aws-cdk/aws-cognito": "^1.204.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.438.0",
     "@aws-sdk/client-s3": "^3.369.0",
     "@aws-sdk/lib-dynamodb": "^3.398.0",
     "@aws-sdk/util-dynamodb": "^3.370.0",
@@ -18,7 +20,7 @@
     "@babel/preset-env": "^7.22.9",
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^29.5.3",
-    "aws-cdk": "^2.87.0",
+    "aws-cdk": "^2.103.1",
     "aws-cdk-lib": "^2.87.0",
     "babel-jest": "^29.6.1",
     "constructs": "^10.2.69",

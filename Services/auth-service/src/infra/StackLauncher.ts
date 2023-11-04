@@ -1,6 +1,8 @@
 import { App } from 'aws-cdk-lib';
 import { LambdaStack } from '../infra/stacks/LambdaStack';
 import { ApiStack } from '../infra/stacks/ApiStack';
+import { AuthStack } from '../infra/stacks/AuthStack';
+
 import * as path from 'path';
 
 const lambdasPath = path.join(__dirname, '..', 'lambdas');
@@ -8,11 +10,17 @@ const lambdasPath = path.join(__dirname, '..', 'lambdas');
 
 const app = new App();
 
-const lambdaStack = new LambdaStack(app, 'EtsyLambdaStack', {
-    lambdaCodePath: lambdasPath
+const authStack = new AuthStack(app, 'AuthStack');
+
+const lambdaStack = new LambdaStack(app, 'LambdaStack', {
+    lambdaCodePath: lambdasPath,
+    userPoolClientId: authStack.userPoolClient.userPoolClientId,
 });
 
 new ApiStack(app, 'EtsyApiStack', {
     authHandler: lambdaStack.authHandler,
-    authCallbackHandler: lambdaStack.authCallbackHandler
+    authCallbackHandler: lambdaStack.authCallbackHandler,
+    registration: lambdaStack.registration
 });
+
+
