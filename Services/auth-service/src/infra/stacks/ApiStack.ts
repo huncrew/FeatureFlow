@@ -1,6 +1,6 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { LambdaIntegration, RestApi, Cors } from 'aws-cdk-lib/aws-apigateway';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 export interface ApiStackProps extends StackProps {
@@ -13,9 +13,15 @@ export class ApiStack extends Stack {
     constructor(scope: Construct, id: string, props: ApiStackProps) {
       super(scope, id, props);
   
+
       const api = new RestApi(this, 'Endpoint', {
-        // No default handler specified here
-      });
+        // Enabling CORS
+        defaultCorsPreflightOptions: {
+            allowOrigins: Cors.ALL_ORIGINS, // Or specify origins ['http://example.com']
+            allowMethods: Cors.ALL_METHODS, // Or specify methods ['GET', 'POST', 'PUT', 'OPTIONS']
+            // You can add allowHeaders, allowCredentials, etc.
+        },
+    });
   
       const authResource = api.root.addResource('auth');
       authResource.addMethod('POST', new LambdaIntegration(props.authHandler));

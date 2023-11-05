@@ -17,7 +17,7 @@ const lambdaStack = new LambdaStack(app, 'LambdaStack', {
     userPoolClientId: authStack.userPoolClient.userPoolClientId,
 });
 
-new ApiStack(app, 'EtsyApiStack', {
+new ApiStack(app, 'AuthApiStack', {
     authHandler: lambdaStack.authHandler,
     authCallbackHandler: lambdaStack.authCallbackHandler,
     registration: lambdaStack.registration
