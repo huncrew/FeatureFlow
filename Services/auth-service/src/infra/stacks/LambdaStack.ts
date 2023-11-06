@@ -11,6 +11,8 @@ export class LambdaStack extends Stack {
     public readonly authHandler: NodejsFunction;
     public readonly authCallbackHandler: NodejsFunction;
     public readonly registration: NodejsFunction;
+    public readonly login: NodejsFunction;
+    public readonly verifyEmail: NodejsFunction;
 
     constructor(scope: Construct, id: string, props: LambdaStackProps) {
         super(scope, id, props);
@@ -25,6 +27,20 @@ export class LambdaStack extends Stack {
 
         this.registration = new NodejsFunction(this, 'AppRegistration', {
             entry: `${props.lambdaCodePath}/registration/index.ts`,
+            environment: {
+                USERPOOL_CLIENT_ID: props.userPoolClientId
+            }
+        });
+
+        this.login = new NodejsFunction(this, 'AppLogin', {
+            entry: `${props.lambdaCodePath}/sign-in/index.ts`,
+            environment: {
+                USERPOOL_CLIENT_ID: props.userPoolClientId
+            }
+        });
+
+        this.verifyEmail = new NodejsFunction(this, 'AppSignUpVerify', {
+            entry: `${props.lambdaCodePath}/verify-email/index.ts`,
             environment: {
                 USERPOOL_CLIENT_ID: props.userPoolClientId
             }

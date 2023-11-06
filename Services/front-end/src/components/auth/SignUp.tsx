@@ -1,4 +1,5 @@
 import React, { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 interface FormData {
@@ -8,6 +9,7 @@ interface FormData {
 }
 
 const SignUp: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -48,6 +50,7 @@ const SignUp: React.FC = () => {
         console.log(response.data);
         setMessage('User registered successfully');
         setIsError(false);
+        navigate('/verify', { state: { email: formData.email } }); // Redirect to verify page with state
         // Handle success case (e.g., redirecting or updating UI)
       } catch (error) {
         if (axios.isAxiosError(error)) {

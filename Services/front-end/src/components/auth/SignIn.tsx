@@ -1,5 +1,7 @@
 import React, { useState, FormEvent } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 interface FormData {
   email: string;
@@ -7,6 +9,8 @@ interface FormData {
 }
 
 const SignIn: React.FC = () => {
+  const navigate = useNavigate();
+  const { signIn } = useAuth(); // Getting the login function from the AuthContext
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -25,7 +29,10 @@ const SignIn: React.FC = () => {
         },
       };
       const body = JSON.stringify({ email: formData.email, password: formData.password });
-      const response = await axios.post('/login', body, config);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, body, config);
+      console.log(response.data.tokens.AccessToken)
+      signIn(response.data.tokens.AccessToken);
+      navigate('/');
       console.log(response.data); // Here, you'd handle the login token and user's session
     } catch (error) {
       if (axios.isAxiosError(error)) {

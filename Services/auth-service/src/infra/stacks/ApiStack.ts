@@ -7,6 +7,8 @@ export interface ApiStackProps extends StackProps {
     authHandler: NodejsFunction;
     authCallbackHandler: NodejsFunction;
     registration: NodejsFunction;
+    login: NodejsFunction;
+    verify: NodejsFunction;
 }
 
 export class ApiStack extends Stack {
@@ -31,5 +33,11 @@ export class ApiStack extends Stack {
   
       const registrationResource = api.root.addResource('register');
       registrationResource.addMethod('POST', new LambdaIntegration(props.registration));
+
+      const loginResource = api.root.addResource('login');
+      loginResource.addMethod('POST', new LambdaIntegration(props.login));
+
+      const verifyEmailResource = api.root.addResource('verify-email');
+      verifyEmailResource.addMethod('POST', new LambdaIntegration(props.verify));
     }
   }

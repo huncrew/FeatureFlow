@@ -20,7 +20,7 @@ const lambdaStack = new LambdaStack(app, 'LambdaStack', {
 new ApiStack(app, 'AuthApiStack', {
     authHandler: lambdaStack.authHandler,
     authCallbackHandler: lambdaStack.authCallbackHandler,
-    registration: lambdaStack.registration
+    registration: lambdaStack.registration,
+    login: lambdaStack.login,
+    verify: lambdaStack.verifyEmail
 });
-
-
