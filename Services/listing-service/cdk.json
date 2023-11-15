@@ -1,0 +1,7 @@
+{
+  "app": "npx ts-node src/infra/StackLauncher.ts",
+  "watch": {
+    "include": "src/**/*.ts",
+    "exclude": "node_modules/**"
+  }
+}

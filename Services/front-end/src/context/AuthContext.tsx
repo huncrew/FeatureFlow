@@ -33,17 +33,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loading: true, // Set loading to true initially
   });
 
-    // When the provider is first mounted, it checks if a token exists in local storage
-    useEffect(() => {
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        setAuthState({
+  useEffect(() => {
+    // Initialize a variable to manage if the effect is still relevant
+    let isCurrent = true;
+  
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      if (isCurrent) {
+        setAuthState((prevState) => ({
+          ...prevState,
           isAuthenticated: true,
           token: token,
           loading: false,
-        });
+        }));
       }
-    }, []);
+    } else {
+      if (isCurrent) {
+        setAuthState((prevState) => ({
+          ...prevState,
+          loading: false,
+        }));
+      }
+    }
+  
+    // Cleanup function to avoid setting state if the component unmounts
+    return () => {
+      isCurrent = false;
+    };
+  }, []);
 
     const signIn = (token: string) => {
       localStorage.setItem('authToken', token);

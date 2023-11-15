@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignUp from './components/auth/SignUp';
 import SignIn from './components/auth/SignIn';
+import WaveComponent from './components/footer/Wave';
 import VerifyAccount from './components/auth/Verify'; // Import your verification component
 import PrivateRoute from './routes/ProtectedRoutes'; // Import your PrivateRoute component
 import Home from './components/home/Home'; // Import your Home component that you want to protect
@@ -11,7 +12,7 @@ const App: React.FC = () => {
   return (
   <AuthProvider>
     <Router>
-      <div className="flex justify-center items-center h-screen space-x-8">
+      <div className="">
         <Routes>
           {/* Public Routes */}
           <Route path="/signup" element={<SignUp />} />
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           />
           {/* You can add more private routes inside PrivateRoute as needed */}
         </Routes>
+        <WaveComponent /> {/* This will render on every page */}
       </div>
     </Router>
   </AuthProvider>

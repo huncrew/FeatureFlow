@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+
+.home-container {
+  /* Your styles for the home container */
+  position: relative;
+}
+
+.wave-pattern {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to right, white 50%, orange 50%);
+  background-size: 200% 200%;
+  animation: moveWave 10s linear infinite;
+}
+
+@keyframes moveWave {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}

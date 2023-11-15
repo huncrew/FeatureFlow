@@ -13,7 +13,10 @@
   "author": "",
   "license": "ISC",
   "workspaces": [
-    "services/auth-service"
+    "services/auth-service",
+    "services/front-end",
+    "services/listing-service",
+    "infra/api-gateway"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
