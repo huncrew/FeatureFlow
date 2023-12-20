@@ -9,5 +9,9 @@ const app = new App();
 
 new ListingServiceLambdaStack(app, 'ListingServiceLambdaStack', {
     lambdaCodePath: lambdasPath,
+    env: {
+        account: '437592400700',
+        region: 'eu-west-2',
+    },
 });
 
