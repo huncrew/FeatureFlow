@@ -6,14 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
-    "format": "npx prettier . --write"
+    "format": "npx prettier . --write",
+    "deploy": "npm run deploy --workspaces --if-present"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "workspaces": [
     "services/auth-service",
-    "services/databreakdown-service"
+    "services/front-end",
+    "services/listing-service",
+    "infra/api-gateway"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
