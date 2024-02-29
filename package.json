@@ -29,6 +29,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@middy/core": "^4.6.0"
+    "@middy/core": "^4.6.0",
+    "openai": "^4.26.0"
   }
 }
