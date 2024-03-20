@@ -12,4 +12,4 @@ JWT ? Library? React FE <> APi gateway?
 
 **Front End**
 
-React
+React with TS, SSR
