@@ -30,7 +30,7 @@ const App: React.FC = () => {
           />
           {/* You can add more private routes inside PrivateRoute as needed */}
         </Routes>
-        <WaveComponent /> {/* This will render on every page */}
+        {/* <WaveComponent /> This will render on every page */}
       </div>
     </Router>
   </AuthProvider>

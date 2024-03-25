@@ -9,6 +9,8 @@ interface FormData {
 }
 
 const SignUp: React.FC = () => {
+  const apiBaseUrl = process.env.REACT_APP_API_URL;
+  console.log('backend url', apiBaseUrl);
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -46,7 +48,7 @@ const SignUp: React.FC = () => {
           },
         };
         const body = JSON.stringify({ email: formData.email, password: formData.password });
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/register`, body, config);
+        const response = await axios.post(`${apiBaseUrl}/register`, body, config);
         console.log(response.data);
         setMessage('User registered successfully');
         setIsError(false);
