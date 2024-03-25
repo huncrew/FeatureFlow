@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@middy/core": "^4.6.0",
-    "openai": "^4.26.0"
+    "openai": "^4.26.0",
+    "zod": "^3.22.4"
   }
 }

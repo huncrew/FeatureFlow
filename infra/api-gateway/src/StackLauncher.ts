@@ -10,6 +10,7 @@ new ApiStack(app, 'ApiStack', {
   registrationArn: Fn.importValue('AuthService-RegistrationHandlerArn'), // Matches 'RegistrationHandler'
   loginArn: Fn.importValue('AuthService-SignInHandlerArn'), // Matches 'SignInHandler'
   verifyEmailArn: Fn.importValue('AuthService-VerifyEmailHandlerArn'), // Matches 'VerifyEmailHandler'
+  contextHandlerArn: Fn.importValue('ContextService-ContextHandlerArn'), // Matches ContextHandler
 });
 
 

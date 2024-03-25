@@ -15,7 +15,7 @@ export class LambdaStack extends Stack {
   public readonly login: NodejsFunction;
   public readonly verifyEmail: NodejsFunction;
 
-  constructor(scope: Construct, id: string, props: LambdaStackProps) {
+  constructor(scope: Construct, id: string, props) {
     super(scope, id, props);
 
     // Helper function to create a NodejsFunction and grant API Gateway invoke permissions

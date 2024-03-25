@@ -9,6 +9,7 @@ export interface ApiStackProps extends StackProps {
   registrationArn: string;
   loginArn: string;
   verifyEmailArn: string;
+  contextHandlerArn: string;
 }
 
 export class ApiStack extends Stack {
@@ -39,6 +40,7 @@ export class ApiStack extends Stack {
     const registrationHandler = importLambda('RegistrationHandler', props.registrationArn);
     const loginHandler = importLambda('LoginHandler', props.loginArn);
     const verifyHandler = importLambda('VerifyHandler', props.verifyEmailArn);
+    const contextHandler = importLambda('ContextHandler', props.contextHandlerArn);
 
     // Add the methods to the corresponding resources
     const authResource = this.api.root.addResource('auth');
@@ -55,5 +57,8 @@ export class ApiStack extends Stack {
 
     const verifyEmailResource = this.api.root.addResource('verify-email');
     verifyEmailResource.addMethod('POST', new LambdaIntegration(verifyHandler));
+
+    const contextResource = this.api.root.addResource('context');
+    contextResource.addMethod('POST', new LambdaIntegration(contextHandler));
   }
 }
