@@ -21,7 +21,7 @@ const MVPDashboard = () => {
   const [projectContext, setProjectContext] = useState('');
   const [techOverview, setTechOverview] = useState('');
   const [featureObjective, setFeatureObjective] = useState('');
-  const [eventDetails, setEventDetails] = useState(''); // Add this line
+  const [eventDetails, setEventDetails] = useState(''); // Add this line 
   const [steps, setSteps] = useState<Step[]>([]);
 
 

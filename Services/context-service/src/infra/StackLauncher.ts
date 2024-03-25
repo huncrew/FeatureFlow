@@ -1,6 +1,6 @@
 import { App } from 'aws-cdk-lib';
-import { LambdaStack } from '../infra/stacks/LambdaStack';
-import { AuthStack } from '../infra/stacks/AuthStack';
+import { LambdaStack } from './stacks/LambdaStack';
+import { AuthStack } from './stacks/AuthStack';
 
 import * as path from 'path';
 
