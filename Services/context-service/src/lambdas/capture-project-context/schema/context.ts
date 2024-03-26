@@ -2,12 +2,17 @@ import { z } from 'zod';
 // Type inferred from Zod schema
 export type ProjectContext = z.infer<typeof ProjectContextSchema>;
 
-// Define your Zod schema for the project context event
+const StepSchema = z.object({
+  title: z.string(),
+  objective: z.string(),
+  exampleCode: z.string(),
+});
+
 const ProjectContextSchema = z.object({
   projectName: z.string(),
   projectContext: z.string(),
   techOverview: z.string(),
-  // Add more fields as necessary
+  steps: z.array(StepSchema), // Include the steps as part of the project context
 });
 
 export const validateProjectContext = (event: ProjectContext): ProjectContext => {
