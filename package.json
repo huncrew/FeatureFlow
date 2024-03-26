@@ -23,6 +23,7 @@
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@types/jest": "^29.5.12",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.46.0",
@@ -33,7 +34,10 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.540.0",
+    "@aws-sdk/lib-dynamodb": "^3.540.0",
     "@middy/core": "^4.6.0",
+    "@types/aws-lambda": "^8.10.136",
     "openai": "^4.26.0",
     "zod": "^3.22.4"
   }

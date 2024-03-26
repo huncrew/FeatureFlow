@@ -1,57 +1,40 @@
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Stack, CfnOutput, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { PolicyStatement, Effect } from 'aws-cdk-lib/aws-iam';
 
 export interface LambdaStackProps extends StackProps {
   lambdaCodePath: string;
-  userPoolClientId: string;
+  projectContextTableName: string; // DynamoDB table name for storing project context
 }
 
 export class LambdaStack extends Stack {
-  public readonly authHandler: NodejsFunction;
-  public readonly authCallbackHandler: NodejsFunction;
-  public readonly registration: NodejsFunction;
-  public readonly login: NodejsFunction;
-  public readonly verifyEmail: NodejsFunction;
+  public readonly contextHandler: NodejsFunction;
 
-  constructor(scope: Construct, id: string, props) {
+  constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
 
-    // Helper function to create a NodejsFunction and grant API Gateway invoke permissions
-    const createLambdaWithPermissions = (id: string, entry: string, environment?: { [key: string]: string }) => {
-      const lambdaFunction = new NodejsFunction(this, id, {
-        entry,
-        environment,
-      });
-
-      lambdaFunction.addPermission(`${id}InvokePermission`, {
-        principal: new ServicePrincipal('apigateway.amazonaws.com'),
-        action: 'lambda:InvokeFunction',
-        sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
-      });
-
-      new CfnOutput(this, `${id}Arn`, {
-        value: lambdaFunction.functionArn,
-        exportName: `AuthService-${id}Arn`,
-      });
-
-      return lambdaFunction;
-    };
-
-    // Create the Lambda functions with the necessary permissions
-    this.authCallbackHandler = createLambdaWithPermissions('EtsyInitiateHandler', `${props.lambdaCodePath}/etsy-initiate-auth/index.ts`);
-    this.authHandler = createLambdaWithPermissions('EtsyCallBackHandler', `${props.lambdaCodePath}/etsy-callback-auth/index.ts`, {
-      USERPOOL_CLIENT_ID: props.userPoolClientId,
+    // Create the ContextHandler lambda function
+    this.contextHandler = new NodejsFunction(this, 'ContextHandler', {
+      entry: `${props.lambdaCodePath}/context-handler/index.ts`, // Adjust the path as necessary
+      environment: {
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTableName, // Pass the DynamoDB table name as an environment variable
+      },
     });
-    this.registration = createLambdaWithPermissions('RegistrationHandler', `${props.lambdaCodePath}/registration/index.ts`, {
-      USERPOOL_CLIENT_ID: props.userPoolClientId,
+
+    // Grant the lambda function permissions to access the DynamoDB table
+    const policyStatement = new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ['dynamodb:GetItem', 'dynamodb:PutItem'], // Adjust permissions as necessary
+      resources: [`arn:aws:dynamodb:${this.region}:${this.account}:table/${props.projectContextTableName}`],
     });
-    this.login = createLambdaWithPermissions('SignInHandler', `${props.lambdaCodePath}/sign-in/index.ts`, {
-      USERPOOL_CLIENT_ID: props.userPoolClientId,
-    });
-    this.verifyEmail = createLambdaWithPermissions('VerifyEmailHandler', `${props.lambdaCodePath}/verify-email/index.ts`, {
-      USERPOOL_CLIENT_ID: props.userPoolClientId,
+
+    this.contextHandler.addToRolePolicy(policyStatement);
+
+    // Output the lambda function ARN
+    new CfnOutput(this, 'ContextHandlerArn', {
+      value: this.contextHandler.functionArn,
+      exportName: 'ContextService-ContextHandlerArn',
     });
   }
 }
