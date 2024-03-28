@@ -1,24 +1,27 @@
 import { z } from 'zod';
-// Type inferred from Zod schema
-export type ProjectContext = z.infer<typeof ProjectContextSchema>;
 
+// Define the schema for a step
 const StepSchema = z.object({
   title: z.string(),
   objective: z.string(),
   exampleCode: z.string(),
+  stepNumber: z.number(),
 });
 
-const ProjectContextSchema = z.object({
-  projectName: z.string(),
-  projectContext: z.string(),
-  techOverview: z.string(),
-  steps: z.array(StepSchema), // Include the steps as part of the project context
+// Define the schema for the full event which includes the step
+const EventSchema = z.object({
+  projectTitle: z.string(),
+  projectOverview: z.string(),
+  techContext: z.string(),
+  featureObjective: z.string(),
+  step: StepSchema, // Not an array, since we're validating a single step event
 });
 
-export const validateProjectContext = (event: ProjectContext): ProjectContext => {
-  // Validate the event using the ProjectContextSchema
-  const result = ProjectContextSchema.parse(event); // This will throw if validation fails
+// Infer the TypeScript type from the Zod schema
+export type Event = z.infer<typeof EventSchema>;
 
-  return result; // result is typed as ProjectContext
+// Function to validate the event
+export const validateEvent = (event: any): Event => {
+  const result = EventSchema.parse(event); // This will throw if validation fails
+  return result; // result is typed as Event (inferred from EventSchema)
 };
-

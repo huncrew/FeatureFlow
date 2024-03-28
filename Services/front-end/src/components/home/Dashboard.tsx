@@ -5,9 +5,9 @@ import AceEditor from 'react-ace';
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
 
-const projects = ['Project 1', 'Project 2', 'FeatureFlow Backend', 'FeatureFlow Frontend']; // Replace with real project names
+const projects = ['Tokenise', 'FeatureFlow Backend', 'FeatureFlow Frontend']; // Replace with real project names
 
-const MVPDashboard = () => {
+const MVPDashboard = () => {  
 
   interface Step {
     id: string;
@@ -24,6 +24,11 @@ const MVPDashboard = () => {
   const [eventDetails, setEventDetails] = useState(''); // Add this line 
   const [steps, setSteps] = useState<Step[]>([]);
 
+  const refreshToken = () => {
+    const newToken = crypto.randomUUID(); // Generate a new token. Replace with your token generation logic if necessary.
+    localStorage.setItem('token', newToken); // Store the new token in local storage.
+    console.log('Token refreshed:', newToken);
+  };
 
   const handleAddStep = () => {
     const newStep: Step = {
@@ -94,6 +99,45 @@ const readFileAsString = (file: File): Promise<string> => {
     // Logic to handle file upload will go here
   };
 
+  // Utility function to make POST request
+  const postData = async (url = '', data = {}) => {
+    const response = await fetch(url, {
+      method: 'POST', 
+      mode: 'cors', 
+      cache: 'no-cache', 
+      credentials: 'same-origin', 
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Authorization': 'Bearer ' + yourAuthToken, // If you need authorization
+      },
+      redirect: 'follow', 
+      referrerPolicy: 'no-referrer', 
+      body: JSON.stringify(data)
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  };
+
+  const sendContextToBackend = async () => {
+    const contextObject = {
+      projectTitle: selectedProject,
+      projectContext: projectContext,
+      techContext: techOverview,
+      featureContext: featureObjective,
+      steps: steps.map(({ id, title, objective, exampleCode }) => ({
+        title,
+        objective,
+        exampleCode,
+      })), // we exclude 'generatedCode' and 'id' as they might not be needed in the context object
+    }
+
+    try {
+      const result = await postData('your-backend-endpoint', contextObject);
+      console.log('Context sent to backend', result);
+    } catch (error) {
+      console.error('Failed to send context to backend', error);
+    }
+  };
+
   return (
     <div className="bg-gray-900 text-white p-4">
       <h1 className="text-3xl mb-8 text-green-400 text-center">FeatureFlow v2 Dashboard</h1>
@@ -108,6 +152,12 @@ const readFileAsString = (file: File): Promise<string> => {
           </option>
         ))}
       </select>
+      <button
+        onClick={sendContextToBackend}
+        className="mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Save Context
+      </button>
       <div className="flex flex-wrap -mx-2 mb-4">
         <div className="w-full md:w-1/2 px-2 mb-4 md:mb-0">
           <h2 className="text-xl mb-2 text-green-400">Project Context</h2>
@@ -127,6 +177,13 @@ const readFileAsString = (file: File): Promise<string> => {
             className="w-full p-3 bg-gray-800 border border-green-500 rounded"
             rows={4}
           />
+          <button 
+            onClick={refreshToken} 
+            className="mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            New Feature
+          </button>
+          
           <button 
             onClick={handleCodebaseUpload} 
             className="mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"

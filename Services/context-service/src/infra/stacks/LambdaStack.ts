@@ -10,13 +10,15 @@ export interface LambdaStackProps extends StackProps {
 
 export class LambdaStack extends Stack {
   public readonly contextHandler: NodejsFunction;
+  public readonly codeGenerator: NodejsFunction;
+
 
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
 
     // Create the ContextHandler lambda function
     this.contextHandler = new NodejsFunction(this, 'ContextHandler', {
-      entry: `${props.lambdaCodePath}/context-handler/index.ts`, // Adjust the path as necessary
+      entry: `${props.lambdaCodePath}/capture-project-context/index.ts`, // Adjust the path as necessary
       environment: {
         PROJECT_CONTEXT_TABLE_NAME: props.projectContextTableName, // Pass the DynamoDB table name as an environment variable
       },
@@ -35,6 +37,29 @@ export class LambdaStack extends Stack {
     new CfnOutput(this, 'ContextHandlerArn', {
       value: this.contextHandler.functionArn,
       exportName: 'ContextService-ContextHandlerArn',
+    });
+
+    // Create the ContextHandler lambda function
+    this.codeGenerator = new NodejsFunction(this, 'CodeGenerator', {
+      entry: `${props.lambdaCodePath}/generate-ai-chatgpt/index.ts`, // Adjust the path as necessary
+      environment: {
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTableName, // Pass the DynamoDB table name as an environment variable
+      },
+    });
+
+    // Grant the lambda function permissions to access the DynamoDB table
+    const chatGPTPolicyStatement = new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ['dynamodb:GetItem', 'dynamodb:PutItem'], // Adjust permissions as necessary
+      resources: [`arn:aws:dynamodb:${this.region}:${this.account}:table/${props.projectContextTableName}`],
+    });
+
+    this.codeGenerator.addToRolePolicy(chatGPTPolicyStatement);
+
+    // Output the lambda function ARN
+    new CfnOutput(this, 'GenerateCodeHandler', {
+      value: this.codeGenerator.functionArn,
+      exportName: 'ContextService-GenerateCodeHandlerArn',
     });
   }
 }

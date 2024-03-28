@@ -1,8 +1,14 @@
-import { ProjectContext, validateProjectContext } from './schema/context';
-import { putContextData } from './repository/storeContext';
+import { Event, validateEvent } from './schema/context';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { z } from 'zod';
 
+// Placeholder function to simulate a call to the ChatGPT service
+export const sendMessageToChatGPT = (eventData: Event): string => {
+  // Here you'd have the logic to construct the message and send it to the ChatGPT service
+  // and return the response from ChatGPT.
+  // For now, we're just simulating with a dummy response.
+  return JSON.stringify({ message: 'Response from ChatGPT', eventData });
+}
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
@@ -10,15 +16,15 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const body = event.body ? JSON.parse(event.body) : {};
 
     // Validate the event body with the schema and infer the TypeScript type
-    const validatedData: ProjectContext = validateProjectContext(body);
+    const validatedData: Event = validateEvent(body);
 
-    // Store the project context data in DynamoDB
-    await putContextData(validatedData);
+    // Send the message to the ChatGPT service
+    const chatGptResponse = await sendMessageToChatGPT(validatedData);
 
-    // return a success response
+    // Return a success response with the ChatGPT message
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Project context saved successfully' }),
+      body: chatGptResponse,
     };
   } catch (error) {
     // Handle validation errors

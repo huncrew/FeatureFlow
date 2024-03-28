@@ -9,9 +9,9 @@ const StepSchema = z.object({
 });
 
 const ProjectContextSchema = z.object({
-  projectName: z.string(),
+  projectTitle: z.string(),
   projectContext: z.string(),
-  techOverview: z.string(),
+  techContext: z.string(),
   steps: z.array(StepSchema), // Include the steps as part of the project context
 });
 
