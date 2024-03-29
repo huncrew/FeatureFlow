@@ -25,7 +25,7 @@ export const useProjectContext = (userId: string, selectedProject: any) => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`your-backend-endpoint/project-context/${userId}/${selectedProject}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/context/${userId}/${selectedProject}`, {
           method: 'GET', 
           headers: {
             'Content-Type': 'application/json',

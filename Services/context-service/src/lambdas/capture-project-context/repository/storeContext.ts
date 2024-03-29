@@ -4,9 +4,10 @@ import { ProjectContext } from '../schema/context';
 import { v4 as uuidv4 } from 'uuid';
 
 export const putContextData = async (data: ProjectContext) => {
-    const projectId = `PROJECT#${uuidv4()}`; // Ensure uniqueness and facilitate querying
-    const userId = `USER#${data.user}`
-
+  const projectId = `PROJECT#${uuidv4()}`; // Ensure uniqueness and facilitate querying
+  const userId = `USER#${data.user}`
+  
+  try { 
     // Prepare the project context item
     const projectContextItem = {
       PK: userId,
@@ -36,4 +37,8 @@ export const putContextData = async (data: ProjectContext) => {
         Item: stepItem,
       }));
     }
+  } catch (error) {
+    console.error('Error handling the request:', error);
+    throw error
+  }
 };

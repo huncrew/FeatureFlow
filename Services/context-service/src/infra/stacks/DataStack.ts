@@ -10,6 +10,7 @@ export class DataStack extends Stack {
 
     // Create DynamoDB table for Project Context
     this.projectContextTable = new Table(this, 'FeatureFlowContextTable', {
+      tableName: 'FeatureFlowContextTable', // Specify your table name here
       partitionKey: {
         name: 'PK',
         type: AttributeType.STRING

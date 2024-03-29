@@ -25,6 +25,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     return {
       statusCode: 200,
       body: chatGptResponse,
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+      },
     };
   } catch (error) {
     // Handle validation errors
@@ -32,6 +37,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'Validation failed', details: error.errors }),
+        headers: {
+          'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+        },
       };
     }
 

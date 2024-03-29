@@ -144,7 +144,7 @@ const readFileAsString = (file: File): Promise<string> => {
     }
 
     try {
-      const result = await postData(`${process.env.REACT_APP_API_URL}/efef`, contextObject);
+      const result = await postData(`${process.env.REACT_APP_API_URL}/context`, contextObject);
       console.log('Context sent to backend', result);
     } catch (error) {
       console.error('Failed to send context to backend', error);

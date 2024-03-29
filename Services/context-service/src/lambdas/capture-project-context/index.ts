@@ -9,6 +9,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // Parse the incoming event body
     const body = event.body ? JSON.parse(event.body) : {};
 
+    console.log('console body', body);
+
     // Validate the event body with the schema and infer the TypeScript type
     const validatedData: ProjectContext = validateProjectContext(body);
 
@@ -19,6 +21,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify({ message: 'Project context saved successfully' }),
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+      },
     };
   } catch (error) {
     // Handle validation errors
@@ -26,6 +33,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'Validation failed', details: error.errors }),
+        headers: {
+          'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+        },
       };
     }
 
@@ -33,7 +45,12 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     console.error('Error handling the request:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Internal server error' }),
+      body: JSON.stringify({ message: 'Internal server error', error: error }),
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+      },
     };
   }
 };
