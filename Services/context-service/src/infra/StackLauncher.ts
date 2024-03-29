@@ -11,7 +11,7 @@ const lambdasPath = path.join(__dirname, '..', 'lambdas');
 const dataStack = new DataStack(app, 'DataStack', {});
 
 // Instantiate the LambdaStack, passing the DynamoDB table name as a prop
-new LambdaStack(app, 'LambdaStack', {
+new LambdaStack(app, 'ContextService-LambdaStack', {
   lambdaCodePath: lambdasPath,
   projectContextTableName: dataStack.projectContextTable.tableName, // Here we assume the table name is directly accessible; adjust as necessary
 });

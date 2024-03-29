@@ -5,6 +5,8 @@ import AceEditor from 'react-ace';
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
 
+import { useProjectContext } from '../../hooks/projectContext';
+
 const projects = ['Tokenise', 'FeatureFlow Backend', 'FeatureFlow Frontend']; // Replace with real project names
 
 const MVPDashboard = () => {  
@@ -18,11 +20,21 @@ const MVPDashboard = () => {
   }
 
   const [selectedProject, setSelectedProject] = useState(projects[0]);
-  const [projectContext, setProjectContext] = useState('');
-  const [techOverview, setTechOverview] = useState('');
-  const [featureObjective, setFeatureObjective] = useState('');
-  const [eventDetails, setEventDetails] = useState(''); // Add this line 
-  const [steps, setSteps] = useState<Step[]>([]);
+
+    const {
+    projectContext,
+    setProjectContext,
+    techOverview,
+    setTechOverview,
+    featureObjective,
+    setFeatureObjective,
+    eventDetails,
+    setEventDetails,
+    steps,
+    setSteps,
+    isLoading,
+    error,
+  } = useProjectContext('user-123', selectedProject); // Pass the user ID and selected project
 
   const refreshToken = () => {
     const newToken = crypto.randomUUID(); // Generate a new token. Replace with your token generation logic if necessary.
@@ -119,6 +131,7 @@ const readFileAsString = (file: File): Promise<string> => {
 
   const sendContextToBackend = async () => {
     const contextObject = {
+      user: 'user-123', // Replace with the actual user ID
       projectTitle: selectedProject,
       projectContext: projectContext,
       techContext: techOverview,
@@ -131,7 +144,7 @@ const readFileAsString = (file: File): Promise<string> => {
     }
 
     try {
-      const result = await postData('your-backend-endpoint', contextObject);
+      const result = await postData(`${process.env.REACT_APP_API_URL}/efef`, contextObject);
       console.log('Context sent to backend', result);
     } catch (error) {
       console.error('Failed to send context to backend', error);

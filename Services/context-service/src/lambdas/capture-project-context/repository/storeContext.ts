@@ -5,10 +5,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const putContextData = async (data: ProjectContext) => {
     const projectId = `PROJECT#${uuidv4()}`; // Ensure uniqueness and facilitate querying
+    const userId = `USER#${data.user}`
 
     // Prepare the project context item
     const projectContextItem = {
-      PK: projectId,
+      PK: userId,
       SK: `METADATA#${projectId}`,
       ...data,
       steps: undefined, // Exclude the steps array from the project context item

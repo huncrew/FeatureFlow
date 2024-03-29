@@ -1,4 +1,4 @@
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Table, AttributeType, BillingMode } from 'aws-cdk-lib/aws-dynamodb';
 
@@ -19,12 +19,6 @@ export class DataStack extends Stack {
         type: AttributeType.STRING
       },
       billingMode: BillingMode.PAY_PER_REQUEST, // or PROVISIONED, based on your needs
-    });
-
-    // Output the table name
-    new CfnOutput(this, 'FeatureFlowContextTable', {
-      value: this.projectContextTable.tableName,
-      exportName: 'FeatureFlowContextTable',
     });
   }
 }

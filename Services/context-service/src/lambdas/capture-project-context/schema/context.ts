@@ -9,6 +9,7 @@ const StepSchema = z.object({
 });
 
 const ProjectContextSchema = z.object({
+  user: z.string(),
   projectTitle: z.string(),
   projectContext: z.string(),
   techContext: z.string(),
