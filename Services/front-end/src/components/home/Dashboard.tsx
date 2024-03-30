@@ -7,7 +7,7 @@ import "ace-builds/src-noconflict/theme-monokai";
 
 import { useProjectContext } from '../../hooks/projectContext';
 
-const projects = ['Tokenise', 'FeatureFlow Backend', 'FeatureFlow Frontend']; // Replace with real project names
+const projects = ['Tokenise', 'FeatureFlowBackend', 'FeatureFlowFrontend']; // Replace with real project names
 
 const MVPDashboard = () => {  
 

@@ -22,6 +22,8 @@ export const useProjectContext = (userId: string, selectedProject: any) => {
     if (!selectedProject) return;
 
     const fetchData = async () => {
+
+      console.log('in fetch Data');
       setIsLoading(true);
       setError(null);
       try {
@@ -38,12 +40,15 @@ export const useProjectContext = (userId: string, selectedProject: any) => {
         }
 
         const data = await response.json();
+
+        console.log('consoling data', data);
         setProjectContext(data.projectContext || '');
-        setTechOverview(data.techOverview || '');
+        setTechOverview(data.techContext || '');
         setFeatureObjective(data.featureObjective || '');
         setEventDetails(data.eventDetails || '');
         setSteps(data.steps || []);
       } catch (e: any) {
+        console.error('Error fetching project context:', e);
         setError(e.message);
       } finally {
         setIsLoading(false);

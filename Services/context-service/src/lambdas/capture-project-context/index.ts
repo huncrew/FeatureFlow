@@ -1,56 +1,74 @@
-import { ProjectContext, validateProjectContext } from './schema/context';
-import { putContextData } from './repository/storeContext';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { z } from 'zod';
-
+import { ProjectContext, validateProjectContext } from './schema/context';
+import { putContextData, getContextData } from './repository/storeContext';
+// Assume there's a function to get context data
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+  // Common CORS headers
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain for production
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+  };
+
   try {
-    // Parse the incoming event body
-    const body = event.body ? JSON.parse(event.body) : {};
+    if (event.httpMethod === 'POST') {
+      // Existing logic to handle POST request
+      const body = event.body ? JSON.parse(event.body) : {};
+      console.log('console body', body);
+      const validatedData: ProjectContext = validateProjectContext(body);
+      await putContextData(validatedData);
 
-    console.log('console body', body);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Project context saved successfully' }),
+        headers: corsHeaders,
+      };
+    } else if (event.httpMethod === 'GET') {
+      // Logic to handle GET request
+      const projectId = event.pathParameters.projectId;
+      const userId = event.pathParameters.userId;
 
-    // Validate the event body with the schema and infer the TypeScript type
-    const validatedData: ProjectContext = validateProjectContext(body);
+      console.log('consoling project and user', projectId, userId)
 
-    // Store the project context data in DynamoDB
-    await putContextData(validatedData);
+      if (!projectId || !userId) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ message: 'Missing projectId or userId' }),
+          headers: corsHeaders,
+        };
+      }
 
-    // return a success response
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: 'Project context saved successfully' }),
-      headers: {
-        'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-      },
-    };
+      const data = await getContextData(projectId, userId);
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify(data),
+        headers: corsHeaders,
+      };
+    } else {
+      // Handle unsupported methods
+      return {
+        statusCode: 405,
+        body: JSON.stringify({ message: 'Method Not Allowed' }),
+        headers: corsHeaders,
+      };
+    }
   } catch (error) {
-    // Handle validation errors
     if (error instanceof z.ZodError) {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'Validation failed', details: error.errors }),
-        headers: {
-          'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-        },
+        headers: corsHeaders,
       };
     }
 
-    // Handle other errors
     console.error('Error handling the request:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: 'Internal server error', error: error }),
-      headers: {
-        'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-      },
+      headers: corsHeaders,
     };
   }
 };

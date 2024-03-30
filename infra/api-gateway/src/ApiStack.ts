@@ -64,7 +64,7 @@ export class ApiStack extends Stack {
     const contextResource = this.api.root.addResource('context');
     contextResource.addMethod('POST', new LambdaIntegration(contextHandler));
 
-    const contextProjectUserResource = contextResource.addResource('{projectId}').addResource('{userId}');
+    const contextProjectUserResource = contextResource.addResource('{userId}').addResource('{projectId}');
     contextProjectUserResource.addMethod('GET', new LambdaIntegration(contextHandler));
 
     const generateCodeResource = this.api.root.addResource('generate-code');
