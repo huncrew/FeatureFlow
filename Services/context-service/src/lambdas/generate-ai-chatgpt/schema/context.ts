@@ -5,16 +5,17 @@ const StepSchema = z.object({
   title: z.string(),
   objective: z.string(),
   exampleCode: z.string(),
-  stepNumber: z.number(),
 });
 
 // Define the schema for the full event which includes the step
 const EventSchema = z.object({
+  userId: z.string(),
   projectTitle: z.string(),
-  projectOverview: z.string(),
+  projectContext: z.string(),
   techContext: z.string(),
   featureObjective: z.string(),
   step: StepSchema, // Not an array, since we're validating a single step event
+  sessionId: z.string(),
 });
 
 // Infer the TypeScript type from the Zod schema

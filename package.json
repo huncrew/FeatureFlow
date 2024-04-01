@@ -38,7 +38,7 @@
     "@aws-sdk/lib-dynamodb": "^3.540.0",
     "@middy/core": "^4.6.0",
     "@types/aws-lambda": "^8.10.136",
-    "openai": "^4.26.0",
+    "openai": "^4.31.0",
     "zod": "^3.22.4"
   }
 }

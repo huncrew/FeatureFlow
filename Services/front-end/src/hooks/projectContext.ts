@@ -11,7 +11,7 @@ export const useProjectContext = (userId: string, selectedProject: any) => {
   }
 
   const [projectContext, setProjectContext] = useState('');
-  const [techOverview, setTechOverview] = useState('');
+  const [techContext, setTechContext] = useState('');
   const [featureObjective, setFeatureObjective] = useState('');
   const [eventDetails, setEventDetails] = useState('');
   const [steps, setSteps] = useState<Step[]>([]);
@@ -43,7 +43,7 @@ export const useProjectContext = (userId: string, selectedProject: any) => {
 
         console.log('consoling data', data);
         setProjectContext(data.projectContext || '');
-        setTechOverview(data.techContext || '');
+        setTechContext(data.techContext || '');
         setFeatureObjective(data.featureObjective || '');
         setEventDetails(data.eventDetails || '');
         setSteps(data.steps || []);
@@ -61,8 +61,8 @@ export const useProjectContext = (userId: string, selectedProject: any) => {
   return {
     projectContext,
     setProjectContext,
-    techOverview,
-    setTechOverview,
+    techContext,
+    setTechContext,
     featureObjective,
     setFeatureObjective,
     eventDetails,

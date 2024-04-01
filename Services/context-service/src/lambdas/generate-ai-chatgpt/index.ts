@@ -1,55 +1,88 @@
-import { Event, validateEvent } from './schema/context';
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { z } from 'zod';
+import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import OpenAI from "openai";
+import config from "../../../envConstants";
 
-// Placeholder function to simulate a call to the ChatGPT service
-export const sendMessageToChatGPT = (eventData: Event): string => {
-  // Here you'd have the logic to construct the message and send it to the ChatGPT service
-  // and return the response from ChatGPT.
-  // For now, we're just simulating with a dummy response.
-  return JSON.stringify({ message: 'Response from ChatGPT', eventData });
+const openai = new OpenAI({
+  apiKey: config.OPENAI_KEY,
+});
+
+const dynamoDbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
+
+// Function to retrieve the current conversation state from DynamoDB
+async function getConversationState(sessionId: string) {
+    const { Item } = await dynamoDbClient.send(new GetItemCommand({
+        TableName: process.env.DYNAMODB_TABLE_NAME,
+        Key: { "SessionId": { S: sessionId } }
+    }));
+
+    return Item ? JSON.parse(Item.Messages.S) : [];
+}
+
+// Function to update the conversation state in DynamoDB
+async function updateConversationState(sessionId: string, messages: any[]) {
+    await dynamoDbClient.send(new PutItemCommand({
+        TableName: process.env.DYNAMODB_TABLE_NAME,
+        Item: {
+            "SessionId": { S: sessionId },
+            "Messages": { S: JSON.stringify(messages) }
+        }
+    }));
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
-  try {
-    // Parse the incoming event body
-    const body = event.body ? JSON.parse(event.body) : {};
+  const { sessionId, projectContext, techContext, featureObjective, eventDetails, step } = JSON.parse(event.body || '{}');
 
-    // Validate the event body with the schema and infer the TypeScript type
-    const validatedData: Event = validateEvent(body);
+  let conversationState = await getConversationState(sessionId);
 
-    // Send the message to the ChatGPT service
-    const chatGptResponse = await sendMessageToChatGPT(validatedData);
+  if (!conversationState.length) {
+    // Reset for a new feature and set initial context
+    conversationState = [];
+    const systemMessage = `You are a programming assistant familiar with modern web development practices, including React, Node.js, Typescript and AWS services including IaC CDK. You will help by providing code that matches the exact style and technical standards provided by the user. The aim is to assist a developer in building features for a web application called FeatureFlow, which automates development by focussing on events, a json event will go through steps, each step is a message sent to you, with the objective of the step, along with example code so you can produce the code to complete the feature. Each step you will be given outlines a specific feature or function that needs coding. Please provide clear, concise, and syntactically correct code snippets and explanations for those steps.`;
+    conversationState.push({ role: "system", content: systemMessage });
 
-    // Return a success response with the ChatGPT message
-    return {
-      statusCode: 200,
-      body: chatGptResponse,
-      headers: {
-        'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-      },
-    };
-  } catch (error) {
-    // Handle validation errors
-    if (error instanceof z.ZodError) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'Validation failed', details: error.errors }),
-        headers: {
-          'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-        },
-      };
-    }
+    // Here, you might add more 'system' context about the app's current technical setup, if it's consistent across features
+    conversationState.push({ role: "system", content: projectContext });
 
-    // Handle other errors
-    console.error('Error handling the request:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Internal server error' }),
-    };
+    // Then, a 'user' message to introduce the feature being worked on in this session
+    conversationState.push({ role: "system", content: techContext });
+
+    // an initial user message to add the feature context, we don't actually capture the response on this, its just more setup.
+    const featureObjectiveMessage = `The feature you are working on is: ${featureObjective}`;
+    conversationState.push({ role: "user", content: featureObjectiveMessage });
+
+    // Step completion. 
+    const firstStepMessage = `The first step is ${step.objective}. please add in the code in the same style, and use the tech stack / standards.
+    Here is the example code: ${step.exampleCode}. Here is the event details: ${eventDetails}. Tech standards: ${techContext}`;
+    conversationState.push({ role: "user", content: firstStepMessage });
+  } else {
+    // subsequent step completion. 
+    const nextStepMessage = `The next step is ${step.objective}. please add in the code in the same style, and use the tech stack / standards.
+    Here is the example code: ${step.exampleCode}. Here is the event details: ${eventDetails}. Tech standards: ${techContext}`;
+    conversationState.push({ role: "user", content: nextStepMessage });
+
   }
+
+  // Generate response from ChatGPT
+  const response = await openai.chat.completions.create({
+      model: "gpt-4-turbo-preview",
+      messages: conversationState.map(msg => ({ role: msg.role, content: msg.content })),
+  });
+
+  // Append generated code to conversation
+  conversationState.push({ role: "assistant", content: response.choices[0].message.content });
+
+  // Update DynamoDB with the latest conversation state
+  await updateConversationState(sessionId, conversationState);
+
+  return {
+      statusCode: 200,
+      body: JSON.stringify({ generatedCode: response.choices[0].message.content, sessionId }),
+      headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST',
+      },
+  };
 };
+

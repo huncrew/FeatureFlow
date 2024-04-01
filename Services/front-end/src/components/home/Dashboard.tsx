@@ -24,8 +24,8 @@ const MVPDashboard = () => {
     const {
     projectContext,
     setProjectContext,
-    techOverview,
-    setTechOverview,
+    techContext,
+    setTechContext,
     featureObjective,
     setFeatureObjective,
     eventDetails,
@@ -98,9 +98,6 @@ const readFileAsString = (file: File): Promise<string> => {
   });
 };
 
-  const generateCodeForStep = (step: any) => {
-    // Placeholder function to be replaced with code generation logic
-  };
 
   const handleProjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedProject(event.target.value);
@@ -134,7 +131,7 @@ const readFileAsString = (file: File): Promise<string> => {
       user: 'user-123', // Replace with the actual user ID
       projectTitle: selectedProject,
       projectContext: projectContext,
-      techContext: techOverview,
+      techContext: techContext,
       featureContext: featureObjective,
       steps: steps.map(({ id, title, objective, exampleCode }) => ({
         title,
@@ -150,6 +147,46 @@ const readFileAsString = (file: File): Promise<string> => {
       console.error('Failed to send context to backend', error);
     }
   };
+// This function sends the context and step details to the backend to generate code for a specific step
+const generateCodeForSpecificStep = async (stepId: string) => {
+  const step = steps.find(s => s.id === stepId);
+  if (!step) {
+    console.error('Step not found');
+    return;
+  }
+
+  // Retrieve the session ID from local storage
+  const sessionId = localStorage.getItem('token');
+  if (!sessionId) {
+    console.error('Session ID not found');
+    return;
+  }
+
+  const dataToSend = {
+    userId: 'user-123', // This should be dynamically set based on the logged-in user
+    projectTitle: selectedProject,
+    projectContext: projectContext,
+    techContext: techContext,
+    featureObjective: featureObjective,
+    eventDetails: eventDetails, // Include event details in the data sent to the backend
+    step: {
+      title: step.title,
+      objective: step.objective,
+      exampleCode: step.exampleCode,
+    },
+    sessionId: sessionId // Include the session ID in the data sent to the backend
+  };
+
+  try {
+    const result = await postData(`${process.env.REACT_APP_API_URL}/generate-code`, dataToSend);
+    console.log('Code generation result:', result);
+    // Update the UI based on the response
+    updateStepField(stepId, 'generatedCode', result.generatedCode);
+  } catch (error) {
+    console.error('Failed to generate code for step', error);
+  }
+};
+
 
   return (
     <div className="bg-gray-900 text-white p-4">
@@ -185,8 +222,8 @@ const readFileAsString = (file: File): Promise<string> => {
         <div className="w-full md:w-1/2 px-2">
           <h2 className="text-xl mb-2 text-green-400">Tech Overview</h2>
           <textarea
-            value={techOverview}
-            onChange={(e) => setTechOverview(e.target.value)}
+            value={techContext}
+            onChange={(e) => setTechContext(e.target.value)}
             className="w-full p-3 bg-gray-800 border border-green-500 rounded"
             rows={4}
           />
@@ -259,7 +296,7 @@ const readFileAsString = (file: File): Promise<string> => {
                       className="w-full p-2 bg-gray-800 border border-green-500 rounded cursor-pointer"
                     />
                     <button
-                      onClick={() => generateCodeForStep(step.id)}
+                      onClick={() => generateCodeForSpecificStep(step.id)}
                       className="mt-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
                     >
                       Generate Code
