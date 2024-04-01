@@ -1,39 +1,16 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import OpenAI from "openai";
 import config from "../../../envConstants";
+import { getConversationMessages, updateConversationMessages } from './repository/storeContext';
 
 const openai = new OpenAI({
   apiKey: config.OPENAI_KEY,
 });
 
-const dynamoDbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
-
-// Function to retrieve the current conversation state from DynamoDB
-async function getConversationState(sessionId: string) {
-    const { Item } = await dynamoDbClient.send(new GetItemCommand({
-        TableName: process.env.DYNAMODB_TABLE_NAME,
-        Key: { "SessionId": { S: sessionId } }
-    }));
-
-    return Item ? JSON.parse(Item.Messages.S) : [];
-}
-
-// Function to update the conversation state in DynamoDB
-async function updateConversationState(sessionId: string, messages: any[]) {
-    await dynamoDbClient.send(new PutItemCommand({
-        TableName: process.env.DYNAMODB_TABLE_NAME,
-        Item: {
-            "SessionId": { S: sessionId },
-            "Messages": { S: JSON.stringify(messages) }
-        }
-    }));
-}
-
 export const handler: APIGatewayProxyHandler = async (event) => {
   const { sessionId, projectContext, techContext, featureObjective, eventDetails, step } = JSON.parse(event.body || '{}');
 
-  let conversationState = await getConversationState(sessionId);
+  let conversationState = await getConversationMessages(sessionId);
 
   if (!conversationState.length) {
     // Reset for a new feature and set initial context
@@ -73,7 +50,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   conversationState.push({ role: "assistant", content: response.choices[0].message.content });
 
   // Update DynamoDB with the latest conversation state
-  await updateConversationState(sessionId, conversationState);
+  await updateConversationMessages(sessionId, conversationState);
 
   return {
       statusCode: 200,

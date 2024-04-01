@@ -14,6 +14,7 @@ const EventSchema = z.object({
   projectContext: z.string(),
   techContext: z.string(),
   featureObjective: z.string(),
+  eventDetails: z.string(),
   step: StepSchema, // Not an array, since we're validating a single step event
   sessionId: z.string(),
 });
