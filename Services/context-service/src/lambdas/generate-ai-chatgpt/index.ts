@@ -3,12 +3,18 @@ import OpenAI from "openai";
 import config from "../../../envConstants";
 import { getConversationMessages, updateConversationMessages } from './repository/storeContext';
 
+console.log(config.OPENAI_KEY)
+
 const openai = new OpenAI({
-  apiKey: config.OPENAI_KEY,
+  apiKey: process.env.OPENAI_KEY,
 });
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+
+  try {
   const { sessionId, projectContext, techContext, featureObjective, eventDetails, step } = JSON.parse(event.body || '{}');
+
+  console.log('in here and the event is', event.body);
 
   let conversationState = await getConversationMessages(sessionId);
 
@@ -40,17 +46,23 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
   }
 
+  console.log('conversation should be created....', conversationState);
+
   // Generate response from ChatGPT
   const response = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview",
       messages: conversationState.map(msg => ({ role: msg.role, content: msg.content })),
   });
 
+  console.log('response from chatgpt', response.choices[0].message.content);
+
   // Append generated code to conversation
   conversationState.push({ role: "assistant", content: response.choices[0].message.content });
 
   // Update DynamoDB with the latest conversation state
   await updateConversationMessages(sessionId, conversationState);
+
+  console.log('conversation state updated in dynamo', conversationState)
 
   return {
       statusCode: 200,
@@ -61,5 +73,18 @@ export const handler: APIGatewayProxyHandler = async (event) => {
           'Access-Control-Allow-Methods': 'OPTIONS,POST',
       },
   };
+
+} catch (error) {
+  console.log('error in lambda', error);
+  return {
+    statusCode: 500,
+    body: JSON.stringify({ error: error.message}),
+    headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST',
+    },
+};
+  }
 };
 

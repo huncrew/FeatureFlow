@@ -187,6 +187,11 @@ const generateCodeForSpecificStep = async (stepId: string) => {
   }
 };
 
+// Utility function to check if a step contains data and should be expanded.
+const shouldStepExpand = (step: Step): boolean => {
+  return !!step.exampleCode || !!step.generatedCode;
+};
+
 
   return (
     <div className="bg-gray-900 text-white p-4">
@@ -265,8 +270,8 @@ const generateCodeForSpecificStep = async (stepId: string) => {
       </div>
       <div>
     {steps.map((step, index) => (
-      <Disclosure key={step.id} as="div" className="mb-4">
-        {({ open }) => (
+      <Disclosure key={step.id} as="div" className="mb-4" defaultOpen={shouldStepExpand(step)}>
+      {({ open }) => (
           <>
             <Disclosure.Button className="flex justify-between items-center text-sm font-medium text-left bg-purple-200 rounded-lg hover:bg-purple-300 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 p-4 mb-2">
               <span>{`Step ${index + 1}: ${step.title || 'New Step'}`}</span>

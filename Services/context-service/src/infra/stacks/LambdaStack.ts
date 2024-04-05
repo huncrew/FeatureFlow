@@ -1,8 +1,9 @@
-import { Stack, CfnOutput, StackProps } from 'aws-cdk-lib';
+import { Stack, CfnOutput, StackProps, Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import config from '../../../envConstants'
 
 export interface LambdaStackProps extends StackProps {
   lambdaCodePath: string;
@@ -42,8 +43,11 @@ export class LambdaStack extends Stack {
     // Create the ContextHandler lambda function
     this.codeGenerator = new NodejsFunction(this, 'CodeGenerator', {
       entry: `${props.lambdaCodePath}/generate-ai-chatgpt/index.ts`, // Adjust the path as necessary
+      timeout: Duration.seconds(600), // Adjust based on expected response time
       environment: {
-        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName, // Pass the DynamoDB table name as an environment variable
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
+          // Define environment variables here
+          OPENAI_KEY: config.OPENAI_KEY, // Pass the DynamoDB table name as an environment variable
       },
     });
 

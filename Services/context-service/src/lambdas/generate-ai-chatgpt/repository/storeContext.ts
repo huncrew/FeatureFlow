@@ -7,8 +7,9 @@ export const updateConversationMessages = async (sessionId: string, messages: an
     await dynamoDb.send(new PutCommand({
       TableName: 'FeatureFlowContextTable',
       Item: {
-        sessionId: sessionId,
-        messages: messages, // Storing the array directly
+        PK: `Session#${sessionId}`, // Use sessionId as part of the partition key
+        SK: "Messages", // Use a constant sort key for all messages related to the session
+        messages: messages, // messages array
       },
     }));
   } catch (error) {
@@ -23,7 +24,8 @@ export const getConversationMessages = async (sessionId: string) => {
     const { Item } = await dynamoDb.send(new GetCommand({
       TableName: 'FeatureFlowContextTable',
       Key: {
-        sessionId: sessionId,
+        PK: `Session#${sessionId}`, // Construct the PK with sessionId
+        SK: "Messages", // Use a constant SK if all messages for a session are stored in a single item
       },
     }));
 
