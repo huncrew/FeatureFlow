@@ -36,12 +36,12 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     // Step completion. 
     const firstStepMessage = `The first step is ${step.objective}. please add in the code in the same style, and use the tech stack / standards.
-    Here is the example code: ${step.exampleCode}. Here is the event details: ${eventDetails}. Tech standards: ${techContext}`;
+    Here is the example code: ${step.exampleCode}. Here is the event details: ${eventDetails}. Tech stack/standards: ${techContext}`;
     conversationState.push({ role: "user", content: firstStepMessage });
   } else {
     // subsequent step completion. 
     const nextStepMessage = `The next step is ${step.objective}. please add in the code in the same style, and use the tech stack / standards.
-    Here is the example code: ${step.exampleCode}. Here is the event details: ${eventDetails}. Tech standards: ${techContext}`;
+    Here is the example code: ${step.exampleCode}. Here is the event details: ${eventDetails}. Tech stack/standards: ${techContext}`;
     conversationState.push({ role: "user", content: nextStepMessage });
 
   }
