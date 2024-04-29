@@ -20,7 +20,7 @@ export class LambdaStack extends Stack {
 
     // Create the ContextHandler lambda function
     this.contextHandler = new NodejsFunction(this, 'ContextHandler', {
-      entry: `${props.lambdaCodePath}/capture-project-context/index.ts`, // Adjust the path as necessary
+      entry: `${props.lambdaCodePath}/sqs-capture-project-context/index.ts`, // Adjust the path as necessary
       environment: {
         PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName, // Pass the DynamoDB table name as an environment variable
       },
@@ -42,7 +42,7 @@ export class LambdaStack extends Stack {
 
     // Create the ContextHandler lambda function
     this.codeGenerator = new NodejsFunction(this, 'CodeGenerator', {
-      entry: `${props.lambdaCodePath}/generate-ai-chatgpt/index.ts`, // Adjust the path as necessary
+      entry: `${props.lambdaCodePath}/chat-initiate-task/index.ts`, // Adjust the path as necessary
       timeout: Duration.seconds(600), // Adjust based on expected response time
       environment: {
         PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
