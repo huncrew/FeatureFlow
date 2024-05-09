@@ -13,5 +13,5 @@ const dataStack = new DataStack(app, 'ContextService-DataStack', {});
 // Pass the entire DynamoDB table object to the LambdaStack
 new LambdaStack(app, 'ContextService-LambdaStack', {
   lambdaCodePath: lambdasPath,
-  projectContextTable: dataStack.projectContextTable, // Pass the table object directly
+  projectContextTable: dataStack.projectContextTable, 
 });
