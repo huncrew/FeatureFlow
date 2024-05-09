@@ -20,9 +20,9 @@ export class LambdaStack extends Stack {
 
     // Create the ContextHandler lambda function
     this.contextHandler = new NodejsFunction(this, 'ContextHandler', {
-      entry: `${props.lambdaCodePath}/sqs-capture-project-context/index.ts`, // Adjust the path as necessary
+      entry: `${props.lambdaCodePath}/sqs-capture-project-context/index.ts`, 
       environment: {
-        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName, // Pass the DynamoDB table name as an environment variable
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName, 
       },
     });
 
