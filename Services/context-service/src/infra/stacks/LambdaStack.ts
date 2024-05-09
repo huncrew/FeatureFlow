@@ -4,19 +4,23 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import config from '../../../envConstants'
+import { Queue } from 'aws-cdk-lib/aws-sqs';
+
 
 export interface LambdaStackProps extends StackProps {
   lambdaCodePath: string;
   projectContextTable: Table; // DynamoDB table name for storing project context
+  myQueue: Queue;  // Add this line
 }
 
 export class LambdaStack extends Stack {
   public readonly contextHandler: NodejsFunction;
   public readonly codeGenerator: NodejsFunction;
-
-
+  
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
+
+    const queueUrl = props.myQueue.queueUrl;
 
     // Create the ContextHandler lambda function
     this.contextHandler = new NodejsFunction(this, 'ContextHandler', {
@@ -46,8 +50,8 @@ export class LambdaStack extends Stack {
       timeout: Duration.seconds(600), // Adjust based on expected response time
       environment: {
         PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
-          // Define environment variables here
-          OPENAI_KEY: config.OPENAI_KEY, // Pass the DynamoDB table name as an environment variable
+        SQS_QUEUE_URL: queueUrl,
+        OPENAI_KEY: config.OPENAI_KEY, // Pass the DynamoDB table name as an environment variable
       },
     });
 
