@@ -5,24 +5,16 @@ import { z } from 'zod';
 import { validateEvent } from './schema/context';
 
 const sqs = new SQS();
-const queueUrl = process.env.SQS_QUEUE_URL;  // Ensure your SQS queue URL is stored in the Lambda environment variables
+const queueUrl = process.env.SQS_QUEUE_URL;
 
 export const handler: APIGatewayProxyHandler = async (event) => {
     const corsHeaders = {
-        'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain for production
+        'Access-Control-Allow-Origin': '*', 
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
     };
 
     try {
-        if (event.httpMethod !== 'POST') {
-            return {
-                statusCode: 405,
-                body: JSON.stringify({ message: 'Method Not Allowed' }),
-                headers: corsHeaders,
-            };
-        }
-
         const body = event.body ? JSON.parse(event.body) : {};
         const validatedData = validateEvent(body); 
 
