@@ -1,4 +1,3 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
 import OpenAI from "openai";
 import config from "../../../envConstants";
 import { getConversationMessages, updateConversationMessages } from './repository/storeContext';
@@ -9,10 +8,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
 
-export const handler: APIGatewayProxyHandler = async (event) => {
+export const handler = async (event) => {
 
   try {
-  const { sessionId, projectContext, techContext, featureObjective, eventDetails, step } = JSON.parse(event.body || '{}');
+  const { taskId, sessionId, projectContext, techContext, featureObjective, eventDetails, step } = JSON.parse(event.body.MessageBody || '{}');
 
   console.log('in here and the event is', event.body);
 
