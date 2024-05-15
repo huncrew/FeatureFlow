@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import config from "../../../envConstants";
-import { getConversationMessages, updateConversationMessages } from './repository/storeContext';
+import { getConversationMessages, updateConversationMessages, updateTaskData } from './repository/storeContext';
 
 console.log(config.OPENAI_KEY)
 
@@ -61,29 +61,14 @@ export const handler = async (event) => {
   // Update DynamoDB with the latest conversation state
   await updateConversationMessages(sessionId, conversationState);
 
+  // update task data ID for retrieval by the FE
+  await updateTaskData(sessionId, taskId, conversationState )
+
   console.log('conversation state updated in dynamo', conversationState)
 
-  return {
-      statusCode: 200,
-      body: JSON.stringify({ generatedCode: response.choices[0].message.content, sessionId }),
-      headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Allow-Methods': 'OPTIONS,POST',
-      },
-  };
 
 } catch (error) {
   console.log('error in lambda', error);
-  return {
-    statusCode: 500,
-    body: JSON.stringify({ error: error.message}),
-    headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST',
-    },
-};
-  }
+}
 };
 

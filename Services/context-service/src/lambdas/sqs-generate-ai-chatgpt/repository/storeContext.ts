@@ -35,3 +35,19 @@ export const getConversationMessages = async (sessionId: string) => {
     throw error;
   }
 };
+
+export const updateTaskData = async (sessionId: string, taskId: string, messages: any[]) => {
+  try {
+    await dynamoDb.send(new PutCommand({
+      TableName: 'FeatureFlowContextTable',
+      Item: {
+        PK: `Session#${sessionId}`,
+        SK: `Task#${taskId}`,
+        Messages: messages,
+      },
+    }));
+  } catch (error) {
+    console.error('Error updating task data:', error);
+    throw error;
+  }
+};
