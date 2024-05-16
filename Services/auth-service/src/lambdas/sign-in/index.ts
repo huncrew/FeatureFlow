@@ -1,6 +1,12 @@
-import { CognitoIdentityProviderClient, InitiateAuthCommand, AuthFlowType } from "@aws-sdk/client-cognito-identity-provider";
+import {
+  CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+  AuthFlowType,
+} from '@aws-sdk/client-cognito-identity-provider';
 
-const client = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION });
+const client = new CognitoIdentityProviderClient({
+  region: process.env.AWS_REGION,
+});
 
 exports.handler = async (event) => {
   const { email, password } = JSON.parse(event.body);
@@ -14,7 +20,9 @@ exports.handler = async (event) => {
   };
 
   try {
-    const { AuthenticationResult } = await client.send(new InitiateAuthCommand(params));
+    const { AuthenticationResult } = await client.send(
+      new InitiateAuthCommand(params),
+    );
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -31,7 +39,10 @@ exports.handler = async (event) => {
     console.error('User sign-in error:', error);
     return {
       statusCode: 400,
-      body: JSON.stringify({ message: 'User sign-in failed', error: error.message }),
+      body: JSON.stringify({
+        message: 'User sign-in failed',
+        error: error.message,
+      }),
       headers: {
         'Access-Control-Allow-Origin': '*', // Adjust this to your actual domain
         'Access-Control-Allow-Headers': 'Content-Type',

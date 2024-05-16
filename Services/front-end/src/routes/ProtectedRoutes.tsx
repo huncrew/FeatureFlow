@@ -8,7 +8,7 @@ type PrivateRouteProps = {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const { authState } = useAuth();
-  
+
   if (!authState.isAuthenticated) {
     return <Navigate to="/signin" />;
   }

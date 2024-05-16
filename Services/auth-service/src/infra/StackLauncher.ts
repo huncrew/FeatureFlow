@@ -6,13 +6,11 @@ import * as path from 'path';
 
 const lambdasPath = path.join(__dirname, '..', 'lambdas');
 
-
 const app = new App();
 
 const authStack = new AuthStack(app, 'AuthStack');
 
 new LambdaStack(app, 'LambdaStack', {
-    lambdaCodePath: lambdasPath,
-    userPoolClientId: authStack.userPoolClient.userPoolClientId,
+  lambdaCodePath: lambdasPath,
+  userPoolClientId: authStack.userPoolClient.userPoolClientId,
 });
-

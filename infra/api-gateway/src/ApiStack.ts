@@ -1,6 +1,11 @@
 import { Stack, StackProps, Fn } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { LambdaIntegration, RestApi, Cors, IRestApi } from 'aws-cdk-lib/aws-apigateway';
+import {
+  LambdaIntegration,
+  RestApi,
+  Cors,
+  IRestApi,
+} from 'aws-cdk-lib/aws-apigateway';
 import { Function } from 'aws-cdk-lib/aws-lambda';
 
 export interface ApiStackProps extends StackProps {
@@ -37,23 +42,40 @@ export class ApiStack extends Stack {
 
     // Import the Lambda functions
     const authHandler = importLambda('AuthHandler', props.authHandlerArn);
-    const authCallbackHandler = importLambda('AuthCallbackHandler', props.authCallbackHandlerArn);
-    const registrationHandler = importLambda('RegistrationHandler', props.registrationArn);
+    const authCallbackHandler = importLambda(
+      'AuthCallbackHandler',
+      props.authCallbackHandlerArn,
+    );
+    const registrationHandler = importLambda(
+      'RegistrationHandler',
+      props.registrationArn,
+    );
     const loginHandler = importLambda('LoginHandler', props.loginArn);
     const verifyHandler = importLambda('VerifyHandler', props.verifyEmailArn);
-    const contextHandler = importLambda('ContextHandler', props.contextHandlerArn);
-    const generateCodeHandler = importLambda('GenerateCodeHandler', props.generateCodeHandlerArn);
-
+    const contextHandler = importLambda(
+      'ContextHandler',
+      props.contextHandlerArn,
+    );
+    const generateCodeHandler = importLambda(
+      'GenerateCodeHandler',
+      props.generateCodeHandlerArn,
+    );
 
     // Add the methods to the corresponding resources
     const authResource = this.api.root.addResource('auth');
     authResource.addMethod('POST', new LambdaIntegration(authHandler));
 
     const callbackResource = authResource.addResource('callback');
-    callbackResource.addMethod('GET', new LambdaIntegration(authCallbackHandler));
+    callbackResource.addMethod(
+      'GET',
+      new LambdaIntegration(authCallbackHandler),
+    );
 
     const registrationResource = this.api.root.addResource('register');
-    registrationResource.addMethod('POST', new LambdaIntegration(registrationHandler));
+    registrationResource.addMethod(
+      'POST',
+      new LambdaIntegration(registrationHandler),
+    );
 
     const loginResource = this.api.root.addResource('login');
     loginResource.addMethod('POST', new LambdaIntegration(loginHandler));
@@ -64,10 +86,18 @@ export class ApiStack extends Stack {
     const contextResource = this.api.root.addResource('context');
     contextResource.addMethod('POST', new LambdaIntegration(contextHandler));
 
-    const contextProjectUserResource = contextResource.addResource('{userId}').addResource('{projectId}');
-    contextProjectUserResource.addMethod('GET', new LambdaIntegration(contextHandler));
+    const contextProjectUserResource = contextResource
+      .addResource('{userId}')
+      .addResource('{projectId}');
+    contextProjectUserResource.addMethod(
+      'GET',
+      new LambdaIntegration(contextHandler),
+    );
 
     const generateCodeResource = this.api.root.addResource('generate-code');
-    generateCodeResource.addMethod('POST', new LambdaIntegration(generateCodeHandler));
+    generateCodeResource.addMethod(
+      'POST',
+      new LambdaIntegration(generateCodeHandler),
+    );
   }
 }

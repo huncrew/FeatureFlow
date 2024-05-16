@@ -16,10 +16,11 @@ const ProjectContextSchema = z.object({
   steps: z.array(StepSchema), // Include the steps as part of the project context
 });
 
-export const validateProjectContext = (event: ProjectContext): ProjectContext => {
+export const validateProjectContext = (
+  event: ProjectContext,
+): ProjectContext => {
   // Validate the event using the ProjectContextSchema
   const result = ProjectContextSchema.parse(event); // This will throw if validation fails
 
   return result; // result is typed as ProjectContext
 };
-

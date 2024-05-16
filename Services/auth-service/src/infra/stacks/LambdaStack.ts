@@ -19,7 +19,11 @@ export class LambdaStack extends Stack {
     super(scope, id, props);
 
     // Helper function to create a NodejsFunction and grant API Gateway invoke permissions
-    const createLambdaWithPermissions = (id: string, entry: string, environment?: { [key: string]: string }) => {
+    const createLambdaWithPermissions = (
+      id: string,
+      entry: string,
+      environment?: { [key: string]: string },
+    ) => {
       const lambdaFunction = new NodejsFunction(this, id, {
         entry,
         environment,
@@ -40,18 +44,37 @@ export class LambdaStack extends Stack {
     };
 
     // Create the Lambda functions with the necessary permissions
-    this.authCallbackHandler = createLambdaWithPermissions('EtsyInitiateHandler', `${props.lambdaCodePath}/etsy-initiate-auth/index.ts`);
-    this.authHandler = createLambdaWithPermissions('EtsyCallBackHandler', `${props.lambdaCodePath}/etsy-callback-auth/index.ts`, {
-      USERPOOL_CLIENT_ID: props.userPoolClientId,
-    });
-    this.registration = createLambdaWithPermissions('RegistrationHandler', `${props.lambdaCodePath}/registration/index.ts`, {
-      USERPOOL_CLIENT_ID: props.userPoolClientId,
-    });
-    this.login = createLambdaWithPermissions('SignInHandler', `${props.lambdaCodePath}/sign-in/index.ts`, {
-      USERPOOL_CLIENT_ID: props.userPoolClientId,
-    });
-    this.verifyEmail = createLambdaWithPermissions('VerifyEmailHandler', `${props.lambdaCodePath}/verify-email/index.ts`, {
-      USERPOOL_CLIENT_ID: props.userPoolClientId,
-    });
+    this.authCallbackHandler = createLambdaWithPermissions(
+      'EtsyInitiateHandler',
+      `${props.lambdaCodePath}/etsy-initiate-auth/index.ts`,
+    );
+    this.authHandler = createLambdaWithPermissions(
+      'EtsyCallBackHandler',
+      `${props.lambdaCodePath}/etsy-callback-auth/index.ts`,
+      {
+        USERPOOL_CLIENT_ID: props.userPoolClientId,
+      },
+    );
+    this.registration = createLambdaWithPermissions(
+      'RegistrationHandler',
+      `${props.lambdaCodePath}/registration/index.ts`,
+      {
+        USERPOOL_CLIENT_ID: props.userPoolClientId,
+      },
+    );
+    this.login = createLambdaWithPermissions(
+      'SignInHandler',
+      `${props.lambdaCodePath}/sign-in/index.ts`,
+      {
+        USERPOOL_CLIENT_ID: props.userPoolClientId,
+      },
+    );
+    this.verifyEmail = createLambdaWithPermissions(
+      'VerifyEmailHandler',
+      `${props.lambdaCodePath}/verify-email/index.ts`,
+      {
+        USERPOOL_CLIENT_ID: props.userPoolClientId,
+      },
+    );
   }
 }

@@ -10,30 +10,30 @@ import { AuthProvider } from './context/AuthContext';
 
 const App: React.FC = () => {
   return (
-  <AuthProvider>
-    <Router>
-      <div className="">
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/verify" element={<VerifyAccount />} />
+    <AuthProvider>
+      <Router>
+        <div className="">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/verify" element={<VerifyAccount />} />
 
-          {/* Private Routes */}
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            }
-          />
-          {/* You can add more private routes inside PrivateRoute as needed */}
-        </Routes>
-        {/* <WaveComponent /> This will render on every page */}
-      </div>
-    </Router>
-  </AuthProvider>
+            {/* Private Routes */}
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Home />
+                </PrivateRoute>
+              }
+            />
+            {/* You can add more private routes inside PrivateRoute as needed */}
+          </Routes>
+          {/* <WaveComponent /> This will render on every page */}
+        </div>
+      </Router>
+    </AuthProvider>
   );
 };
 

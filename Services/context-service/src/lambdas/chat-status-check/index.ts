@@ -30,7 +30,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       const projectId = event.pathParameters.projectId;
       const userId = event.pathParameters.userId;
 
-      console.log('consoling project and user', projectId, userId)
+      console.log('consoling project and user', projectId, userId);
 
       if (!projectId || !userId) {
         return {
@@ -59,7 +59,10 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (error instanceof z.ZodError) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'Validation failed', details: error.errors }),
+        body: JSON.stringify({
+          message: 'Validation failed',
+          details: error.errors,
+        }),
         headers: corsHeaders,
       };
     }

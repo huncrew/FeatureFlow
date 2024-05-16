@@ -8,7 +8,10 @@ type EditSaveControlsProps = {
   onSave: () => void;
 };
 
-const EditSaveControls: React.FC<EditSaveControlsProps> = ({ listing, onSave }) => {
+const EditSaveControls: React.FC<EditSaveControlsProps> = ({
+  listing,
+  onSave,
+}) => {
   return (
     <div className="edit-save-controls">
       <button onClick={onSave}>Save</button>

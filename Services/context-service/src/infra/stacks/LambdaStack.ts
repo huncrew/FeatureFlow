@@ -3,20 +3,19 @@ import { Construct } from 'constructs';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
-import config from '../../../envConstants'
+import config from '../../../envConstants';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
-
 
 export interface LambdaStackProps extends StackProps {
   lambdaCodePath: string;
   projectContextTable: Table; // DynamoDB table name for storing project context
-  myQueue: Queue;  // Add this line
+  myQueue: Queue; // Add this line
 }
 
 export class LambdaStack extends Stack {
   public readonly contextHandler: NodejsFunction;
   public readonly codeGenerator: NodejsFunction;
-  
+
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
 
@@ -24,9 +23,9 @@ export class LambdaStack extends Stack {
 
     // Create the ContextHandler lambda function
     this.contextHandler = new NodejsFunction(this, 'ContextHandler', {
-      entry: `${props.lambdaCodePath}/sqs-capture-project-context/index.ts`, 
+      entry: `${props.lambdaCodePath}/sqs-capture-project-context/index.ts`,
       environment: {
-        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName, 
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
       },
     });
 
@@ -56,7 +55,6 @@ export class LambdaStack extends Stack {
     });
 
     props.projectContextTable.grantReadWriteData(this.codeGenerator);
-
 
     this.codeGenerator.addPermission('CodeGeneratorInvokePermission', {
       principal: new ServicePrincipal('apigateway.amazonaws.com'),

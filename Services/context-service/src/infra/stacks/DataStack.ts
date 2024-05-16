@@ -13,11 +13,11 @@ export class DataStack extends Stack {
       tableName: 'FeatureFlowContextTable', // Specify your table name here
       partitionKey: {
         name: 'PK',
-        type: AttributeType.STRING
+        type: AttributeType.STRING,
       },
       sortKey: {
         name: 'SK',
-        type: AttributeType.STRING
+        type: AttributeType.STRING,
       },
       billingMode: BillingMode.PAY_PER_REQUEST, // or PROVISIONED, based on your needs
     });

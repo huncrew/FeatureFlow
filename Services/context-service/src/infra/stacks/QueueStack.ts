@@ -11,13 +11,13 @@ export class QueueStack extends Stack {
 
     // Create an SQS queue
     this.myQueue = new Queue(this, 'MyQueue', {
-      visibilityTimeout: Duration.seconds(300) 
+      visibilityTimeout: Duration.seconds(300),
     });
 
     // Output the SQS Queue URL
     new CfnOutput(this, 'QueueURL', {
       value: this.myQueue.queueUrl,
-      exportName: 'MyQueueURL'
+      exportName: 'MyQueueURL',
     });
   }
 }

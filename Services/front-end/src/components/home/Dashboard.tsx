@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { Disclosure } from '@headlessui/react';
 import AceEditor from 'react-ace';
 
-import "ace-builds/src-noconflict/mode-javascript";
-import "ace-builds/src-noconflict/theme-monokai";
+import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/theme-monokai';
 
 import { useProjectContext } from '../../hooks/projectContext';
 
 const projects = ['Tokenise', 'FeatureFlowBackend', 'FeatureFlowFrontend']; // Replace with real project names
 
-const MVPDashboard = () => {  
-
+const MVPDashboard = () => {
   interface Step {
     id: string;
     title: string;
@@ -21,7 +20,7 @@ const MVPDashboard = () => {
 
   const [selectedProject, setSelectedProject] = useState(projects[0]);
 
-    const {
+  const {
     projectContext,
     setProjectContext,
     techContext,
@@ -56,48 +55,58 @@ const MVPDashboard = () => {
   const handleUploadExample = (stepId: string, fileContent: string) => {
     // handle file content, assuming it's already read and passed as a string
     setSteps(
-      steps.map(step =>
-        step.id === stepId ? { ...step, exampleCode: fileContent } : step
-      )
+      steps.map((step) =>
+        step.id === stepId ? { ...step, exampleCode: fileContent } : step,
+      ),
     );
   };
 
   // This function updates the fields for title and objective of a step
-const updateStepField = (stepId: string, field: keyof Step, value: string) => {
-  setSteps(steps.map(step => {
-    if (step.id === stepId) {
-      return { ...step, [field]: value };
-    }
-    return step;
-  }));
-};
-
-// This function handles the file upload for the example code of a step
-const handleExampleCodeFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, stepId: string) => {
-  if (event.target.files) {
-    const file = event.target.files[0];
-    if (file) {
-      const fileContent = await readFileAsString(file);
-      setSteps(steps.map(step => {
+  const updateStepField = (
+    stepId: string,
+    field: keyof Step,
+    value: string,
+  ) => {
+    setSteps(
+      steps.map((step) => {
         if (step.id === stepId) {
-          return { ...step, exampleCode: fileContent };
+          return { ...step, [field]: value };
         }
         return step;
-      }));
+      }),
+    );
+  };
+
+  // This function handles the file upload for the example code of a step
+  const handleExampleCodeFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    stepId: string,
+  ) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      if (file) {
+        const fileContent = await readFileAsString(file);
+        setSteps(
+          steps.map((step) => {
+            if (step.id === stepId) {
+              return { ...step, exampleCode: fileContent };
+            }
+            return step;
+          }),
+        );
+      }
     }
-  }
-};
+  };
 
-// Helper function to read file as a string
-const readFileAsString = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsText(file);
-  });
-};
-
+  // Helper function to read file as a string
+  const readFileAsString = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  };
 
   const handleProjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedProject(event.target.value);
@@ -111,17 +120,17 @@ const readFileAsString = (file: File): Promise<string> => {
   // Utility function to make POST request
   const postData = async (url = '', data = {}) => {
     const response = await fetch(url, {
-      method: 'POST', 
-      mode: 'cors', 
-      cache: 'no-cache', 
-      credentials: 'same-origin', 
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
         // 'Authorization': 'Bearer ' + yourAuthToken, // If you need authorization
       },
-      redirect: 'follow', 
-      referrerPolicy: 'no-referrer', 
-      body: JSON.stringify(data)
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify(data),
     });
     return response.json(); // parses JSON response into native JavaScript objects
   };
@@ -138,69 +147,76 @@ const readFileAsString = (file: File): Promise<string> => {
         objective,
         exampleCode,
       })), // we exclude 'generatedCode' and 'id' as they might not be needed in the context object
-    }
+    };
 
     try {
-      const result = await postData(`${process.env.REACT_APP_API_URL}/context`, contextObject);
+      const result = await postData(
+        `${process.env.REACT_APP_API_URL}/context`,
+        contextObject,
+      );
       console.log('Context sent to backend', result);
     } catch (error) {
       console.error('Failed to send context to backend', error);
     }
   };
-// This function sends the context and step details to the backend to generate code for a specific step
-const generateCodeForSpecificStep = async (stepId: string) => {
-  const step = steps.find(s => s.id === stepId);
-  if (!step) {
-    console.error('Step not found');
-    return;
-  }
+  // This function sends the context and step details to the backend to generate code for a specific step
+  const generateCodeForSpecificStep = async (stepId: string) => {
+    const step = steps.find((s) => s.id === stepId);
+    if (!step) {
+      console.error('Step not found');
+      return;
+    }
 
-  // Retrieve the session ID from local storage
-  const sessionId = localStorage.getItem('token');
-  if (!sessionId) {
-    console.error('Session ID not found');
-    return;
-  }
+    // Retrieve the session ID from local storage
+    const sessionId = localStorage.getItem('token');
+    if (!sessionId) {
+      console.error('Session ID not found');
+      return;
+    }
 
-  const dataToSend = {
-    userId: 'user-123', // This should be dynamically set based on the logged-in user
-    projectTitle: selectedProject,
-    projectContext: projectContext,
-    techContext: techContext,
-    featureObjective: featureObjective,
-    eventDetails: eventDetails, // Include event details in the data sent to the backend
-    step: {
-      title: step.title,
-      objective: step.objective,
-      exampleCode: step.exampleCode,
-    },
-    sessionId: sessionId // Include the session ID in the data sent to the backend
+    const dataToSend = {
+      userId: 'user-123', // This should be dynamically set based on the logged-in user
+      projectTitle: selectedProject,
+      projectContext: projectContext,
+      techContext: techContext,
+      featureObjective: featureObjective,
+      eventDetails: eventDetails, // Include event details in the data sent to the backend
+      step: {
+        title: step.title,
+        objective: step.objective,
+        exampleCode: step.exampleCode,
+      },
+      sessionId: sessionId, // Include the session ID in the data sent to the backend
+    };
+
+    try {
+      const result = await postData(
+        `${process.env.REACT_APP_API_URL}/generate-code`,
+        dataToSend,
+      );
+      console.log('Code generation result:', result);
+      // Update the UI based on the response
+      updateStepField(stepId, 'generatedCode', result.generatedCode);
+    } catch (error) {
+      console.error('Failed to generate code for step', error);
+    }
   };
 
-  try {
-    const result = await postData(`${process.env.REACT_APP_API_URL}/generate-code`, dataToSend);
-    console.log('Code generation result:', result);
-    // Update the UI based on the response
-    updateStepField(stepId, 'generatedCode', result.generatedCode);
-  } catch (error) {
-    console.error('Failed to generate code for step', error);
-  }
-};
-
-// Utility function to check if a step contains data and should be expanded.
-const shouldStepExpand = (step: Step): boolean => {
-  return !!step.exampleCode || !!step.generatedCode;
-};
-
+  // Utility function to check if a step contains data and should be expanded.
+  const shouldStepExpand = (step: Step): boolean => {
+    return !!step.exampleCode || !!step.generatedCode;
+  };
 
   return (
     <div className="bg-gray-900 text-white p-4">
-      <h1 className="text-3xl mb-8 text-green-400 text-center">FeatureFlow v2 Dashboard</h1>
+      <h1 className="text-3xl mb-8 text-green-400 text-center">
+        FeatureFlow v2 Dashboard
+      </h1>
       <select
         onChange={handleProjectChange}
         value={selectedProject}
         className="bg-gray-800 text-white border border-green-500 rounded p-2 mb-4"
-        >
+      >
         {projects.map((project) => (
           <option key={project} value={project}>
             {project}
@@ -232,15 +248,15 @@ const shouldStepExpand = (step: Step): boolean => {
             className="w-full p-3 bg-gray-800 border border-green-500 rounded"
             rows={4}
           />
-          <button 
-            onClick={refreshToken} 
+          <button
+            onClick={refreshToken}
             className="mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
             New Feature
           </button>
-          
-          <button 
-            onClick={handleCodebaseUpload} 
+
+          <button
+            onClick={handleCodebaseUpload}
             className="mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
             Upload Codebase
@@ -249,7 +265,9 @@ const shouldStepExpand = (step: Step): boolean => {
       </div>
 
       <div className="mb-4">
-        <h2 className="text-xl mb-2 text-green-400">Feature Objective (e.g., JIRA Ticket)</h2>
+        <h2 className="text-xl mb-2 text-green-400">
+          Feature Objective (e.g., JIRA Ticket)
+        </h2>
         <input
           type="text"
           value={featureObjective}
@@ -269,94 +287,113 @@ const shouldStepExpand = (step: Step): boolean => {
         />
       </div>
       <div>
-    {steps.map((step, index) => (
-      <Disclosure key={step.id} as="div" className="mb-4" defaultOpen={shouldStepExpand(step)}>
-      {({ open }) => (
-          <>
-            <Disclosure.Button className="flex justify-between items-center text-sm font-medium text-left bg-purple-200 rounded-lg hover:bg-purple-300 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 p-4 mb-2">
-              <span>{`Step ${index + 1}: ${step.title || 'New Step'}`}</span>
-              <span>{open ? '−' : '+'}</span>
-            </Disclosure.Button>
-            {open && (
-              <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500 bg-gray-700 rounded">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Step Title"
-                      value={step.title}
-                      onChange={e => updateStepField(step.id, 'title', e.target.value)}
-                      className="w-full p-2 mb-2 bg-gray-800 border border-green-500 rounded"
-                    />
-                    <textarea
-                      placeholder="Objective"
-                      value={step.objective}
-                      onChange={e => updateStepField(step.id, 'objective', e.target.value)}
-                      className="w-full p-2 mb-2 bg-gray-800 border border-green-500 rounded"
-                      rows={4}
-                    />
-                    <input
-                      type="file"
-                      onChange={e => handleExampleCodeFileUpload(e, step.id)}
-                      className="w-full p-2 bg-gray-800 border border-green-500 rounded cursor-pointer"
-                    />
-                    <button
-                      onClick={() => generateCodeForSpecificStep(step.id)}
-                      className="mt-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
-                    >
-                      Generate Code
-                    </button>
-                  </div>
-                  <div className="space-y-2">
-                    <AceEditor
-                      placeholder="Type your code here..."
-                      mode="javascript"
-                      theme="monokai"
-                      name={`exampleCodeEditor_${index}`}
-                      fontSize={14}
-                      showPrintMargin={true}
-                      showGutter={true}
-                      highlightActiveLine={true}
-                      value={step.exampleCode}
-                      onChange={newCode => updateStepField(step.id, 'exampleCode', newCode)}
-                      setOptions={{
-                        useWorker: false,
-                        enableBasicAutocompletion: false,
-                        enableLiveAutocompletion: false,
-                        enableSnippets: false,
-                        showLineNumbers: true,
-                        tabSize: 2,
-                      }}
-                      style={{ width: '100%', height: '200px' }}
-                    />
-                    <AceEditor
-                      placeholder="Generated code will appear here..."
-                      mode="javascript"
-                      theme="monokai"
-                      name={`generatedCodeEditor_${index}`}
-                      readOnly={true}
-                      value={step.generatedCode}
-                      fontSize={14}
-                      showPrintMargin={true}
-                      showGutter={true}
-                      highlightActiveLine={true}
-                      setOptions={{
-                        useWorker: false,
-                      }}
-                      style={{ width: '100%', height: '200px' }}
-                    />
-                  </div>
-                </div>
-              </Disclosure.Panel>
+        {steps.map((step, index) => (
+          <Disclosure
+            key={step.id}
+            as="div"
+            className="mb-4"
+            defaultOpen={shouldStepExpand(step)}
+          >
+            {({ open }) => (
+              <>
+                <Disclosure.Button className="flex justify-between items-center text-sm font-medium text-left bg-purple-200 rounded-lg hover:bg-purple-300 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 p-4 mb-2">
+                  <span>{`Step ${index + 1}: ${
+                    step.title || 'New Step'
+                  }`}</span>
+                  <span>{open ? '−' : '+'}</span>
+                </Disclosure.Button>
+                {open && (
+                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500 bg-gray-700 rounded">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Step Title"
+                          value={step.title}
+                          onChange={(e) =>
+                            updateStepField(step.id, 'title', e.target.value)
+                          }
+                          className="w-full p-2 mb-2 bg-gray-800 border border-green-500 rounded"
+                        />
+                        <textarea
+                          placeholder="Objective"
+                          value={step.objective}
+                          onChange={(e) =>
+                            updateStepField(
+                              step.id,
+                              'objective',
+                              e.target.value,
+                            )
+                          }
+                          className="w-full p-2 mb-2 bg-gray-800 border border-green-500 rounded"
+                          rows={4}
+                        />
+                        <input
+                          type="file"
+                          onChange={(e) =>
+                            handleExampleCodeFileUpload(e, step.id)
+                          }
+                          className="w-full p-2 bg-gray-800 border border-green-500 rounded cursor-pointer"
+                        />
+                        <button
+                          onClick={() => generateCodeForSpecificStep(step.id)}
+                          className="mt-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
+                        >
+                          Generate Code
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        <AceEditor
+                          placeholder="Type your code here..."
+                          mode="javascript"
+                          theme="monokai"
+                          name={`exampleCodeEditor_${index}`}
+                          fontSize={14}
+                          showPrintMargin={true}
+                          showGutter={true}
+                          highlightActiveLine={true}
+                          value={step.exampleCode}
+                          onChange={(newCode) =>
+                            updateStepField(step.id, 'exampleCode', newCode)
+                          }
+                          setOptions={{
+                            useWorker: false,
+                            enableBasicAutocompletion: false,
+                            enableLiveAutocompletion: false,
+                            enableSnippets: false,
+                            showLineNumbers: true,
+                            tabSize: 2,
+                          }}
+                          style={{ width: '100%', height: '200px' }}
+                        />
+                        <AceEditor
+                          placeholder="Generated code will appear here..."
+                          mode="javascript"
+                          theme="monokai"
+                          name={`generatedCodeEditor_${index}`}
+                          readOnly={true}
+                          value={step.generatedCode}
+                          fontSize={14}
+                          showPrintMargin={true}
+                          showGutter={true}
+                          highlightActiveLine={true}
+                          setOptions={{
+                            useWorker: false,
+                          }}
+                          style={{ width: '100%', height: '200px' }}
+                        />
+                      </div>
+                    </div>
+                  </Disclosure.Panel>
+                )}
+              </>
             )}
-          </>
-        )}
-      </Disclosure>
-    ))}
-    <button onClick={handleAddStep} className="button-retro mt-4">
-      + Add Step
-    </button>
-  </div>
+          </Disclosure>
+        ))}
+        <button onClick={handleAddStep} className="button-retro mt-4">
+          + Add Step
+        </button>
+      </div>
       {/* ... */}
     </div>
   );

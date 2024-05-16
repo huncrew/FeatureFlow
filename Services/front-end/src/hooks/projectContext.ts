@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 export const useProjectContext = (userId: string, selectedProject: any) => {
-
   interface Step {
     id: string;
     title: string;
@@ -22,18 +21,20 @@ export const useProjectContext = (userId: string, selectedProject: any) => {
     if (!selectedProject) return;
 
     const fetchData = async () => {
-
       console.log('in fetch Data');
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/context/${userId}/${selectedProject}`, {
-          method: 'GET', 
-          headers: {
-            'Content-Type': 'application/json',
-            // 'Authorization': 'Bearer ' + yourAuthToken, // If you need authorization
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/context/${userId}/${selectedProject}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              // 'Authorization': 'Bearer ' + yourAuthToken, // If you need authorization
+            },
           },
-        });
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

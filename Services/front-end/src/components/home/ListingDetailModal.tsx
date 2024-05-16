@@ -24,13 +24,19 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
       <div className="bg-white p-4 rounded-lg shadow-lg max-w-7xl w-full">
         <div className="flex justify-between items-start">
           <h2 className="text-xl font-bold">Listing Details</h2>
-          <button onClick={onClose} className="text-sm">Close</button>
+          <button onClick={onClose} className="text-sm">
+            Close
+          </button>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Current listing details */}
           <div className="w-full lg:w-1/2 p-4 space-y-4">
-            <img className="w-20 h-20 object-cover rounded" src={listing.imageUrl} alt={listing.title} />
+            <img
+              className="w-20 h-20 object-cover rounded"
+              src={listing.imageUrl}
+              alt={listing.title}
+            />
             <div className="border p-2 rounded">
               <p className="font-semibold">Title:</p>
               <p>{listing.title}</p>
@@ -43,7 +49,12 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
               <p className="font-semibold">Tags:</p>
               <div className="flex flex-wrap gap-2">
                 {listing.tags?.map((tag, index) => (
-                  <span key={index} className="bg-gray-200 rounded px-2 py-1 text-sm">{tag}</span>
+                  <span
+                    key={index}
+                    className="bg-gray-200 rounded px-2 py-1 text-sm"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
             </div>
@@ -51,7 +62,11 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
 
           {/* AI suggested improvements (Using the same layout for now) */}
           <div className="w-full lg:w-1/2 p-4 space-y-4">
-            <img className="w-20 h-20 object-cover rounded" src={suggestedListing.imageUrl} alt={suggestedListing.title} />
+            <img
+              className="w-20 h-20 object-cover rounded"
+              src={suggestedListing.imageUrl}
+              alt={suggestedListing.title}
+            />
             <div className="border p-2 rounded">
               <p className="font-semibold">Title:</p>
               <p>{suggestedListing.title}</p>
@@ -64,7 +79,12 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
               <p className="font-semibold">Tags:</p>
               <div className="flex flex-wrap gap-2">
                 {suggestedListing.tags?.map((tag, index) => (
-                  <span key={index} className="bg-gray-200 rounded px-2 py-1 text-sm">{tag}</span>
+                  <span
+                    key={index}
+                    className="bg-gray-200 rounded px-2 py-1 text-sm"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
             </div>

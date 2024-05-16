@@ -28,9 +28,16 @@ const SignIn: React.FC = () => {
           'Content-Type': 'application/json',
         },
       };
-      const body = JSON.stringify({ email: formData.email, password: formData.password });
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, body, config);
-      console.log(response.data.tokens.AccessToken)
+      const body = JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/login`,
+        body,
+        config,
+      );
+      console.log(response.data.tokens.AccessToken);
       signIn(response.data.tokens.AccessToken);
       navigate('/');
       console.log(response.data); // Here, you'd handle the login token and user's session
@@ -47,7 +54,10 @@ const SignIn: React.FC = () => {
     <div className="flex justify-center items-center h-screen">
       <form onSubmit={onSubmit} className="p-10 bg-white rounded-lg shadow-xl">
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="email"
+          >
             Email:
           </label>
           <input
@@ -61,7 +71,10 @@ const SignIn: React.FC = () => {
           />
         </div>
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="password"
+          >
             Password:
           </label>
           <input

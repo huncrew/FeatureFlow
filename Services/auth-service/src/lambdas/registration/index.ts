@@ -1,12 +1,17 @@
-import { CognitoIdentityProviderClient, SignUpCommand } from "@aws-sdk/client-cognito-identity-provider";
+import {
+  CognitoIdentityProviderClient,
+  SignUpCommand,
+} from '@aws-sdk/client-cognito-identity-provider';
 
-const client = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION });
+const client = new CognitoIdentityProviderClient({
+  region: process.env.AWS_REGION,
+});
 
 exports.handler = async (event: any) => {
   try {
     const { email, password } = JSON.parse(event.body);
 
-    console.log('the body',JSON.parse(event.body))
+    console.log('the body', JSON.parse(event.body));
 
     const params = {
       ClientId: process.env.USERPOOL_CLIENT_ID as string,

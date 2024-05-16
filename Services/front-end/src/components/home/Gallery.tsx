@@ -7,12 +7,7 @@ type GalleryProps = {
 };
 
 const Gallery: React.FC<GalleryProps> = ({ listing }) => {
-
-  return (
-    <div className="gallery">
-      {/* ... */}
-    </div>
-  );
+  return <div className="gallery">{/* ... */}</div>;
 };
 
 export default Gallery;

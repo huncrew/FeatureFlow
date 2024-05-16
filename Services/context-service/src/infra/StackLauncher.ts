@@ -13,5 +13,5 @@ const dataStack = new DataStack(app, 'ContextService-DataStack');
 new LambdaStack(app, 'ContextService-LambdaStack', {
   lambdaCodePath: lambdasPath,
   projectContextTable: dataStack.projectContextTable,
-  myQueue: queueStack.myQueue,  // Pass the queue like this
+  myQueue: queueStack.myQueue, // Pass the queue like this
 });

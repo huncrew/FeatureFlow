@@ -5,12 +5,14 @@ import axios from 'axios';
 const Verify: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [email, setEmail] = useState(location.state?.email || 'test@example.com');
+  const [email, setEmail] = useState(
+    location.state?.email || 'test@example.com',
+  );
   const [confirmationCode, setConfirmationCode] = useState('');
-    // Start with a default test email, you can change this manually for testing
+  // Start with a default test email, you can change this manually for testing
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(location.state?.email)
+    console.log(location.state?.email);
     e.preventDefault();
 
     try {
@@ -23,7 +25,11 @@ const Verify: React.FC = () => {
           'Content-Type': 'application/json',
         },
       };
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/verify-email`, body, config);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/verify-email`,
+        body,
+        config,
+      );
       console.log(response.data);
       // Handle navigation after successful verification
       navigate('/signin'); // Redirect to a success page or sign-in page
@@ -36,8 +42,11 @@ const Verify: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <form onSubmit={onSubmit} className="p-10 bg-white rounded-lg shadow-xl">
-      <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="email"
+          >
             Email:
           </label>
           <input
@@ -50,7 +59,10 @@ const Verify: React.FC = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmationCode">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="confirmationCode"
+          >
             Confirmation Code:
           </label>
           <input

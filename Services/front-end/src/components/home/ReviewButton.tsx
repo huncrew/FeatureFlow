@@ -17,5 +17,4 @@ const ReviewButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   );
 };
 
-
 export default ReviewButton;

@@ -1,6 +1,6 @@
 // useListings.ts
 import { useState, useEffect } from 'react';
-import { Listing } from '../types'
+import { Listing } from '../types';
 import { dummyListings } from './dummyData';
 
 const useListings = () => {

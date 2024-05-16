@@ -15,7 +15,7 @@ const config: Config = {
   ETSY_CLIENT_ID: process.env.ETSY_CLIENT_ID || '',
   REDIRECT_URI: process.env.REDIRECT_URI || '',
   ETSY_CLIENT_SECRET: process.env.ETSY_CLIENT_SECRET || '',
-  OPENAI_KEY: process.env.OPENAI || ''
+  OPENAI_KEY: process.env.OPENAI || '',
 };
 
 // Exporting the config object
