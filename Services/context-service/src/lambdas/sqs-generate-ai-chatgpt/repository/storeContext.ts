@@ -11,9 +11,9 @@ export const updateConversationMessages = async (
       new PutCommand({
         TableName: 'FeatureFlowContextTable',
         Item: {
-          PK: `Session#${sessionId}`,
+          PK: `SESSION#${sessionId}`,
           SK: 'Messages',
-          messages: messages,
+          Messages: messages,
         },
       }),
     );
@@ -30,7 +30,7 @@ export const getConversationMessages = async (sessionId: string) => {
       new GetCommand({
         TableName: 'FeatureFlowContextTable',
         Key: {
-          PK: `Session#${sessionId}`,
+          PK: `SESSION#${sessionId}`,
           SK: 'Messages',
         },
       }),
@@ -46,16 +46,16 @@ export const getConversationMessages = async (sessionId: string) => {
 export const updateTaskData = async (
   sessionId: string,
   taskId: string,
-  messages: any[],
+  message: string,
 ) => {
   try {
     await dynamoDb.send(
       new PutCommand({
         TableName: 'FeatureFlowContextTable',
         Item: {
-          PK: `Session#${sessionId}`,
-          SK: `Task#${taskId}`,
-          Messages: messages,
+          PK: `SESSION#${sessionId}`,
+          SK: `TASK#${taskId}`,
+          LatestMessage: message,
         },
       }),
     );

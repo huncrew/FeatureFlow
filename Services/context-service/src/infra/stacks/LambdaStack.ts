@@ -14,16 +14,18 @@ export interface LambdaStackProps extends StackProps {
 
 export class LambdaStack extends Stack {
   public readonly contextHandler: NodejsFunction;
-  public readonly codeGenerator: NodejsFunction;
+  public readonly createStep: NodejsFunction;
 
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
 
     const queueUrl = props.myQueue.queueUrl;
 
-    // Create the ContextHandler lambda function
+
+    // PROJECT CONTEXT LAMBDA
+
     this.contextHandler = new NodejsFunction(this, 'ContextHandler', {
-      entry: `${props.lambdaCodePath}/sqs-capture-project-context/index.ts`,
+      entry: `${props.lambdaCodePath}/capture-project-context/index.ts`,
       environment: {
         PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
       },
@@ -43,20 +45,21 @@ export class LambdaStack extends Stack {
       exportName: 'ContextService-ContextHandlerArn',
     });
 
-    // Create the ContextHandler lambda function
-    this.codeGenerator = new NodejsFunction(this, 'CodeGenerator', {
-      entry: `${props.lambdaCodePath}/chat-initiate-task/index.ts`, // Adjust the path as necessary
-      timeout: Duration.seconds(600), // Adjust based on expected response time
+    // INITIATE TASK LAMBDA FOR TASK ID
+
+    this.createStep = new NodejsFunction(this, 'CreateStep', {
+      entry: `${props.lambdaCodePath}/create-step/index.ts`, 
+      timeout: Duration.seconds(600),
       environment: {
         PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
         SQS_QUEUE_URL: queueUrl,
-        OPENAI_KEY: config.OPENAI_KEY, // Pass the DynamoDB table name as an environment variable
+        OPENAI_KEY: config.OPENAI_KEY,
       },
     });
 
-    props.projectContextTable.grantReadWriteData(this.codeGenerator);
+    props.projectContextTable.grantReadWriteData(this.createStep);
 
-    this.codeGenerator.addPermission('CodeGeneratorInvokePermission', {
+    this.createStep.addPermission('CodeGeneratorInvokePermission', {
       principal: new ServicePrincipal('apigateway.amazonaws.com'),
       action: 'lambda:InvokeFunction',
       sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
@@ -67,5 +70,31 @@ export class LambdaStack extends Stack {
       value: this.codeGenerator.functionArn,
       exportName: 'ContextService-GenerateCodeHandlerArn',
     });
+
+
+    // 
+        this.codeGenerator = new NodejsFunction(this, 'CodeGenerator', {
+          entry: `${props.lambdaCodePath}/chat-initiate-task/index.ts`, // Adjust the path as necessary
+          timeout: Duration.seconds(600), // Adjust based on expected response time
+          environment: {
+            PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
+            SQS_QUEUE_URL: queueUrl,
+            OPENAI_KEY: config.OPENAI_KEY, // Pass the DynamoDB table name as an environment variable
+          },
+        });
+    
+        props.projectContextTable.grantReadWriteData(this.codeGenerator);
+    
+        this.codeGenerator.addPermission('CodeGeneratorInvokePermission', {
+          principal: new ServicePrincipal('apigateway.amazonaws.com'),
+          action: 'lambda:InvokeFunction',
+          sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
+        });
+    
+        // Output the lambda function ARN
+        new CfnOutput(this, 'GenerateCodeHandler', {
+          value: this.codeGenerator.functionArn,
+          exportName: 'ContextService-GenerateCodeHandlerArn',
+        });
   }
 }

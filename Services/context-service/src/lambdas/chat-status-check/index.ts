@@ -1,7 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { z } from 'zod';
-import { ProjectContext, validateProjectContext } from './schema/context';
-import { putContextData, getContextData } from './repository/storeContext';
+import { getTaskData } from './repository/getTaskData';
 // Assume there's a function to get context data
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -13,38 +12,27 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   };
 
   try {
-    if (event.httpMethod === 'POST') {
-      // Existing logic to handle POST request
-      const body = event.body ? JSON.parse(event.body) : {};
-      console.log('console body', body);
-      const validatedData: ProjectContext = validateProjectContext(body);
-      await putContextData(validatedData);
-
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: 'Project context saved successfully' }),
-        headers: corsHeaders,
-      };
-    } else if (event.httpMethod === 'GET') {
+    if (event.httpMethod === 'GET') {
       // Logic to handle GET request
       const projectId = event.pathParameters.projectId;
-      const userId = event.pathParameters.userId;
+      const sessionId = event.pathParameters.sessionId;
+      const taskId = event.pathParameters.taskId;
 
-      console.log('consoling project and user', projectId, userId);
+      console.log('consoling project and task', projectId, taskId);
 
-      if (!projectId || !userId) {
+      if (!projectId || !sessionId || !taskId) {
         return {
           statusCode: 400,
-          body: JSON.stringify({ message: 'Missing projectId or userId' }),
+          body: JSON.stringify({ message: 'Missing projectId or userId or taskId' }),
           headers: corsHeaders,
         };
       }
 
-      const data = await getContextData(projectId, userId);
+      const taskMessage = await getTaskData(sessionId, taskId);
 
       return {
         statusCode: 200,
-        body: JSON.stringify(data),
+        body: JSON.stringify(taskMessage),
         headers: corsHeaders,
       };
     } else {

@@ -81,7 +81,7 @@ export const handler = async (event) => {
     await updateConversationMessages(sessionId, conversationState);
 
     // update task data ID for retrieval by the FE
-    await updateTaskData(sessionId, taskId, conversationState);
+    await updateTaskData(sessionId, taskId, response.choices[0].message.content);
 
     console.log('conversation state updated in dynamo', conversationState);
   } catch (error) {
