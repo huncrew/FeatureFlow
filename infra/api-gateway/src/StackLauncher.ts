@@ -11,7 +11,9 @@ new ApiStack(app, 'ApiStack', {
   loginArn: Fn.importValue('AuthService-SignInHandlerArn'), // Matches 'SignInHandler'
   verifyEmailArn: Fn.importValue('AuthService-VerifyEmailHandlerArn'), // Matches 'VerifyEmailHandler'
   contextHandlerArn: Fn.importValue('ContextService-ContextHandlerArn'), // Matches ContextHandler
-  generateCodeHandlerArn: Fn.importValue(
-    'ContextService-GenerateCodeHandlerArn',
-  ), // Matches CodeGeneratorHandler
+  stepCreateArn: Fn.importValue(
+    'ContextService-StepCreateArn',
+  ),
+  stepStatusCheckArn: Fn.importValue('ContextService-StepStatusHandlerArn'),
+  generateAIArn: Fn.importValue('ContextService-GenerateAIHandlerArn')
 });

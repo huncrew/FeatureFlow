@@ -9,13 +9,12 @@ interface Step {
   exampleCode: string;
 }
 
-
 export const getTaskData = async (
   sessionId: string,
   taskId: string,
 ): Promise<ProjectContext | null> => {
   const pk = `SESSION#${sessionId}`;
-  const sk = `TASK#${taskId}`
+  const sk = `TASK#${taskId}`;
 
   console.log('project pk and sk', pk, sk);
 
@@ -38,8 +37,7 @@ export const getTaskData = async (
       return null;
     }
 
-    const latestMessage = taskResult
-      .Items[0].LatestMessage
+    const latestMessage = taskResult.Items[0].LatestMessage;
 
     console.log(latestMessage);
 

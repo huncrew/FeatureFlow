@@ -15,7 +15,9 @@ export interface ApiStackProps extends StackProps {
   loginArn: string;
   verifyEmailArn: string;
   contextHandlerArn: string;
-  generateCodeHandlerArn: string;
+  stepCreateArn: string;
+  stepStatusCheckArn: string;
+  generateAIArn: string
 }
 
 export class ApiStack extends Stack {
@@ -57,8 +59,8 @@ export class ApiStack extends Stack {
       props.contextHandlerArn,
     );
     const generateCodeHandler = importLambda(
-      'GenerateCodeHandler',
-      props.generateCodeHandlerArn,
+      'StepCreateHandler',
+      props.stepCreateArn,
     );
 
     // Add the methods to the corresponding resources

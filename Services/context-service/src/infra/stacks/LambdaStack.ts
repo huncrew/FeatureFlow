@@ -14,13 +14,16 @@ export interface LambdaStackProps extends StackProps {
 
 export class LambdaStack extends Stack {
   public readonly contextHandler: NodejsFunction;
-  public readonly createStep: NodejsFunction;
+  public readonly stepCreate: NodejsFunction;
+  public readonly stepStatusCheck: NodejsFunction;
+  public readonly generateAI: NodejsFunction;
+
+
 
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
 
     const queueUrl = props.myQueue.queueUrl;
-
 
     // PROJECT CONTEXT LAMBDA
 
@@ -45,10 +48,10 @@ export class LambdaStack extends Stack {
       exportName: 'ContextService-ContextHandlerArn',
     });
 
-    // INITIATE TASK LAMBDA FOR TASK ID
+    // INITIATE STEP TASK LAMBDA FOR TASK ID
 
-    this.createStep = new NodejsFunction(this, 'CreateStep', {
-      entry: `${props.lambdaCodePath}/create-step/index.ts`, 
+    this.stepCreate = new NodejsFunction(this, 'CreateStep', {
+      entry: `${props.lambdaCodePath}/create-step/index.ts`,
       timeout: Duration.seconds(600),
       environment: {
         PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
@@ -57,44 +60,63 @@ export class LambdaStack extends Stack {
       },
     });
 
-    props.projectContextTable.grantReadWriteData(this.createStep);
+    props.projectContextTable.grantReadWriteData(this.stepCreate);
 
-    this.createStep.addPermission('CodeGeneratorInvokePermission', {
+    this.stepCreate.addPermission('StepCreateInvokePermission', {
       principal: new ServicePrincipal('apigateway.amazonaws.com'),
       action: 'lambda:InvokeFunction',
       sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
     });
 
     // Output the lambda function ARN
-    new CfnOutput(this, 'GenerateCodeHandler', {
-      value: this.codeGenerator.functionArn,
-      exportName: 'ContextService-GenerateCodeHandlerArn',
+    new CfnOutput(this, 'StepCreateHandler', {
+      value: this.stepCreate.functionArn,
+      exportName: 'ContextService-StepCreateArn',
     });
 
+    // STEP TASK STATUS CHECK
+    this.stepStatusCheck = new NodejsFunction(this, 'StepStatusCheck', {
+      entry: `${props.lambdaCodePath}/step-task-status-check/index.ts`, 
+      timeout: Duration.seconds(600), 
+      environment: {
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,   },
+    });
 
-    // 
-        this.codeGenerator = new NodejsFunction(this, 'CodeGenerator', {
-          entry: `${props.lambdaCodePath}/chat-initiate-task/index.ts`, // Adjust the path as necessary
-          timeout: Duration.seconds(600), // Adjust based on expected response time
-          environment: {
-            PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
-            SQS_QUEUE_URL: queueUrl,
-            OPENAI_KEY: config.OPENAI_KEY, // Pass the DynamoDB table name as an environment variable
-          },
-        });
+    props.projectContextTable.grantReadWriteData(this.stepStatusCheck);
+
+    this.stepStatusCheck.addPermission('StepStatusInvokePermission', {
+      principal: new ServicePrincipal('apigateway.amazonaws.com'),
+      action: 'lambda:InvokeFunction',
+      sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
+    });
+
+    // Output the lambda function ARN
+    new CfnOutput(this, 'StepStatusHandler', {
+      value: this.stepStatusCheck.functionArn,
+      exportName: 'ContextService-StepStatusHandlerArn',
+    });
+
     
-        props.projectContextTable.grantReadWriteData(this.codeGenerator);
-    
-        this.codeGenerator.addPermission('CodeGeneratorInvokePermission', {
-          principal: new ServicePrincipal('apigateway.amazonaws.com'),
-          action: 'lambda:InvokeFunction',
-          sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
-        });
-    
-        // Output the lambda function ARN
-        new CfnOutput(this, 'GenerateCodeHandler', {
-          value: this.codeGenerator.functionArn,
-          exportName: 'ContextService-GenerateCodeHandlerArn',
-        });
+    // GENERATE AI 
+    this.generateAI = new NodejsFunction(this, 'GenerateAI', {
+      entry: `${props.lambdaCodePath}/sqs-generate-ai-chatgpt/index.ts`, 
+      timeout: Duration.seconds(600), 
+      environment: {
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,   },
+    });
+
+    props.projectContextTable.grantReadWriteData(this.generateAI);
+
+    this.generateAI.addPermission('GenerateAIInvokePermission', {
+      principal: new ServicePrincipal('apigateway.amazonaws.com'),
+      action: 'lambda:InvokeFunction',
+      sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
+    });
+
+    // Output the lambda function ARN
+    new CfnOutput(this, 'GenerateAIHandler', {
+      value: this.generateAI.functionArn,
+      exportName: 'ContextService-GenerateAIHandlerArn',
+    });
   }
 }

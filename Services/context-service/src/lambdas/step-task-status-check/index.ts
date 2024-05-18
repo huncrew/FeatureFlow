@@ -23,7 +23,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       if (!projectId || !sessionId || !taskId) {
         return {
           statusCode: 400,
-          body: JSON.stringify({ message: 'Missing projectId or userId or taskId' }),
+          body: JSON.stringify({
+            message: 'Missing projectId or userId or taskId',
+          }),
           headers: corsHeaders,
         };
       }
