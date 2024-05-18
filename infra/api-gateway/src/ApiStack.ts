@@ -58,12 +58,22 @@ export class ApiStack extends Stack {
       'ContextHandler',
       props.contextHandlerArn,
     );
-    const generateCodeHandler = importLambda(
+    const stepCreateHandler = importLambda(
       'StepCreateHandler',
       props.stepCreateArn,
     );
 
-    // Add the methods to the corresponding resources
+    // check status of steps
+    const stepStatusCheckHandler = importLambda('StepStatusCheckHandler', props.stepStatusCheckArn);
+
+    // generate AI
+    const generateAIHandler = importLambda('GenerateAIHandler', props.generateAIArn);
+
+
+    // ADD API GATEWAY RESOURCES
+
+
+    // AUTH
     const authResource = this.api.root.addResource('auth');
     authResource.addMethod('POST', new LambdaIntegration(authHandler));
 
@@ -85,6 +95,8 @@ export class ApiStack extends Stack {
     const verifyEmailResource = this.api.root.addResource('verify-email');
     verifyEmailResource.addMethod('POST', new LambdaIntegration(verifyHandler));
 
+    // CONTEXT 
+
     const contextResource = this.api.root.addResource('context');
     contextResource.addMethod('POST', new LambdaIntegration(contextHandler));
 
@@ -96,10 +108,27 @@ export class ApiStack extends Stack {
       new LambdaIntegration(contextHandler),
     );
 
-    const generateCodeResource = this.api.root.addResource('generate-code');
-    generateCodeResource.addMethod(
+    // STEP CREATE
+
+    const stepCreateResource = this.api.root.addResource('step-create');
+    stepCreateResource.addMethod(
       'POST',
-      new LambdaIntegration(generateCodeHandler),
+      new LambdaIntegration(stepCreateHandler),
     );
+
+    // STEP STATUS CHECK
+
+    const stepStatusCheckResource = this.api.root.addResource('step-status-check');
+    stepStatusCheckResource
+      .addResource('{sessionId}')
+      .addResource('{taskId}');
+      stepStatusCheckResource.addMethod('GET', new LambdaIntegration(stepStatusCheckHandler));
+
+
+    // GENERATE AI
+
+    const generateAIResource = this.api.root.addResource('generate-ai');
+    generateAIResource.addMethod('POST', new LambdaIntegration(generateAIHandler));
+
   }
 }
