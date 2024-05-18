@@ -17,7 +17,7 @@ export interface ApiStackProps extends StackProps {
   contextHandlerArn: string;
   stepCreateArn: string;
   stepStatusCheckArn: string;
-  generateAIArn: string
+  generateAIArn: string;
 }
 
 export class ApiStack extends Stack {
@@ -31,6 +31,7 @@ export class ApiStack extends Stack {
       defaultCorsPreflightOptions: {
         allowOrigins: Cors.ALL_ORIGINS,
         allowMethods: Cors.ALL_METHODS,
+        allowHeaders: ['Content-Type'],
       },
     });
 
@@ -64,14 +65,18 @@ export class ApiStack extends Stack {
     );
 
     // check status of steps
-    const stepStatusCheckHandler = importLambda('StepStatusCheckHandler', props.stepStatusCheckArn);
+    const stepStatusCheckHandler = importLambda(
+      'StepStatusHandler',
+      props.stepStatusCheckArn,
+    );
 
     // generate AI
-    const generateAIHandler = importLambda('GenerateAIHandler', props.generateAIArn);
-
+    const generateAIHandler = importLambda(
+      'GenerateAIHandler',
+      props.generateAIArn,
+    );
 
     // ADD API GATEWAY RESOURCES
-
 
     // AUTH
     const authResource = this.api.root.addResource('auth');
@@ -95,7 +100,7 @@ export class ApiStack extends Stack {
     const verifyEmailResource = this.api.root.addResource('verify-email');
     verifyEmailResource.addMethod('POST', new LambdaIntegration(verifyHandler));
 
-    // CONTEXT 
+    // CONTEXT
 
     const contextResource = this.api.root.addResource('context');
     contextResource.addMethod('POST', new LambdaIntegration(contextHandler));
@@ -117,18 +122,22 @@ export class ApiStack extends Stack {
     );
 
     // STEP STATUS CHECK
-
-    const stepStatusCheckResource = this.api.root.addResource('step-status-check');
-    stepStatusCheckResource
+    // STEP STATUS CHECK
+    const stepStatusCheckResource =
+      this.api.root.addResource('step-status-check');
+    const sessionResource = stepStatusCheckResource
       .addResource('{sessionId}')
       .addResource('{taskId}');
-      stepStatusCheckResource.addMethod('GET', new LambdaIntegration(stepStatusCheckHandler));
-
+    sessionResource.addMethod(
+      'GET',
+      new LambdaIntegration(stepStatusCheckHandler),
+    );
 
     // GENERATE AI
-
     const generateAIResource = this.api.root.addResource('generate-ai');
-    generateAIResource.addMethod('POST', new LambdaIntegration(generateAIHandler));
-
+    generateAIResource.addMethod(
+      'POST',
+      new LambdaIntegration(generateAIHandler),
+    );
   }
 }

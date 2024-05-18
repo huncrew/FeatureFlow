@@ -29,6 +29,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       })
       .promise();
 
+    console.log('called sqs with task id', taskId);
+
     return {
       statusCode: 200,
       body: JSON.stringify({

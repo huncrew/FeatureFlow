@@ -11,7 +11,7 @@ export class QueueStack extends Stack {
 
     // Create an SQS queue
     this.myQueue = new Queue(this, 'MyQueue', {
-      visibilityTimeout: Duration.seconds(300),
+      visibilityTimeout: Duration.seconds(600),
     });
 
     // Output the SQS Queue URL

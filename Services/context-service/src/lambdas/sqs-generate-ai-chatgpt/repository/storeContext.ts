@@ -49,6 +49,7 @@ export const updateTaskData = async (
   message: string,
 ) => {
   try {
+    console.log('calling inside update task data function');
     await dynamoDb.send(
       new PutCommand({
         TableName: 'FeatureFlowContextTable',

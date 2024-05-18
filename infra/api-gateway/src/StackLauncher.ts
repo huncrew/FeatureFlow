@@ -9,11 +9,9 @@ new ApiStack(app, 'ApiStack', {
   authCallbackHandlerArn: Fn.importValue('AuthService-EtsyCallBackHandlerArn'), // Matches 'EtsyInitiateHandler'
   registrationArn: Fn.importValue('AuthService-RegistrationHandlerArn'), // Matches 'RegistrationHandler'
   loginArn: Fn.importValue('AuthService-SignInHandlerArn'), // Matches 'SignInHandler'
-  verifyEmailArn: Fn.importValue('AuthService-VerifyEmailHandlerArn'), // Matches 'VerifyEmailHandler'
-  contextHandlerArn: Fn.importValue('ContextService-ContextHandlerArn'), // Matches ContextHandler
-  stepCreateArn: Fn.importValue(
-    'ContextService-StepCreateArn',
-  ),
+  verifyEmailArn: Fn.importValue('AuthService-VerifyEmailHandlerArn'),
+  contextHandlerArn: Fn.importValue('ContextService-ContextHandlerArn'),
+  stepCreateArn: Fn.importValue('ContextService-StepCreateArn'),
   stepStatusCheckArn: Fn.importValue('ContextService-StepStatusHandlerArn'),
-  generateAIArn: Fn.importValue('ContextService-GenerateAIHandlerArn')
+  generateAIArn: Fn.importValue('ContextService-GenerateAIHandlerArn'),
 });

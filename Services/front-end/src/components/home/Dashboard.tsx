@@ -18,7 +18,7 @@ const MVPDashboard = () => {
     generatedCode: string;
   }
 
-  const [selectedProject, setSelectedProject] = useState(projects[0]);
+  const [selectedProject, setSelectedProject] = useState(projects[1]);
 
   const {
     projectContext,
@@ -175,31 +175,80 @@ const MVPDashboard = () => {
     }
 
     const dataToSend = {
-      userId: 'user-123', // This should be dynamically set based on the logged-in user
+      userId: 'user-123',
       projectTitle: selectedProject,
       projectContext: projectContext,
       techContext: techContext,
       featureObjective: featureObjective,
-      eventDetails: eventDetails, // Include event details in the data sent to the backend
+      eventDetails: eventDetails,
       step: {
         title: step.title,
         objective: step.objective,
         exampleCode: step.exampleCode,
       },
-      sessionId: sessionId, // Include the session ID in the data sent to the backend
+      sessionId: sessionId,
     };
 
     try {
       const result = await postData(
-        `${process.env.REACT_APP_API_URL}/generate-code`,
+        `${process.env.REACT_APP_API_URL}/step-create`,
         dataToSend,
       );
-      console.log('Code generation result:', result);
+      console.log('step create result:', result);
+
+      // Start polling for the task status
+      pollTaskStatus(sessionId, result.taskId, stepId);
       // Update the UI based on the response
-      updateStepField(stepId, 'generatedCode', result.generatedCode);
     } catch (error) {
       console.error('Failed to generate code for step', error);
     }
+  };
+
+  // Function to poll for task status
+  const pollTaskStatus = async (
+    sessionId: string,
+    taskId: string,
+    stepId: string,
+  ) => {
+    const pollInterval = 5000; // 5 seconds
+
+    console.log('sessionId', sessionId);
+
+    console.log('taskId', taskId);
+
+    const checkStatus = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/step-status-check/${sessionId}/${taskId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              // 'Authorization': 'Bearer ' + yourAuthToken, // If you need authorization
+            },
+          },
+        );
+        const result = await response.json();
+
+        console.log(result);
+
+        if (result.Status === 'completed') {
+          console.log('Task completed:', result);
+          // Update the UI with the generated code
+          updateStepField(stepId, 'generatedCode', result.Result.generatedCode);
+        } else if (result.Status === 'failed') {
+          console.error('Task failed:', result);
+        } else {
+          console.log('Task still processing...');
+          setTimeout(checkStatus, pollInterval);
+        }
+      } catch (error) {
+        console.error('Failed to poll task status', error);
+        setTimeout(checkStatus, pollInterval); // Retry polling on error
+      }
+    };
+
+    checkStatus(); // Start polling
   };
 
   // Utility function to check if a step contains data and should be expanded.

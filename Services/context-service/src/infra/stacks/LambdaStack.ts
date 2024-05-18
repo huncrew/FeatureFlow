@@ -1,10 +1,11 @@
 import { Stack, CfnOutput, StackProps, Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { ServicePrincipal, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import config from '../../../envConstants';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 
 export interface LambdaStackProps extends StackProps {
   lambdaCodePath: string;
@@ -17,8 +18,6 @@ export class LambdaStack extends Stack {
   public readonly stepCreate: NodejsFunction;
   public readonly stepStatusCheck: NodejsFunction;
   public readonly generateAI: NodejsFunction;
-
-
 
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
@@ -51,12 +50,11 @@ export class LambdaStack extends Stack {
     // INITIATE STEP TASK LAMBDA FOR TASK ID
 
     this.stepCreate = new NodejsFunction(this, 'CreateStep', {
-      entry: `${props.lambdaCodePath}/create-step/index.ts`,
+      entry: `${props.lambdaCodePath}/step-create/index.ts`,
       timeout: Duration.seconds(600),
       environment: {
         PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
         SQS_QUEUE_URL: queueUrl,
-        OPENAI_KEY: config.OPENAI_KEY,
       },
     });
 
@@ -68,6 +66,14 @@ export class LambdaStack extends Stack {
       sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
     });
 
+    // Grant permissions to send messages to the SQS queue
+    this.stepCreate.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['sqs:SendMessage'],
+        resources: [props.myQueue.queueArn],
+      }),
+    );
+
     // Output the lambda function ARN
     new CfnOutput(this, 'StepCreateHandler', {
       value: this.stepCreate.functionArn,
@@ -76,10 +82,11 @@ export class LambdaStack extends Stack {
 
     // STEP TASK STATUS CHECK
     this.stepStatusCheck = new NodejsFunction(this, 'StepStatusCheck', {
-      entry: `${props.lambdaCodePath}/step-task-status-check/index.ts`, 
-      timeout: Duration.seconds(600), 
+      entry: `${props.lambdaCodePath}/step-task-status-check/index.ts`,
+      timeout: Duration.seconds(600),
       environment: {
-        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,   },
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
+      },
     });
 
     props.projectContextTable.grantReadWriteData(this.stepStatusCheck);
@@ -96,13 +103,14 @@ export class LambdaStack extends Stack {
       exportName: 'ContextService-StepStatusHandlerArn',
     });
 
-    
-    // GENERATE AI 
+    // GENERATE AI
     this.generateAI = new NodejsFunction(this, 'GenerateAI', {
-      entry: `${props.lambdaCodePath}/sqs-generate-ai-chatgpt/index.ts`, 
-      timeout: Duration.seconds(600), 
+      entry: `${props.lambdaCodePath}/sqs-generate-ai-chatgpt/index.ts`,
+      timeout: Duration.seconds(600),
       environment: {
-        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,   },
+        PROJECT_CONTEXT_TABLE_NAME: props.projectContextTable.tableName,
+        OPENAI_KEY: config.OPENAI_KEY,
+      },
     });
 
     props.projectContextTable.grantReadWriteData(this.generateAI);
@@ -112,6 +120,12 @@ export class LambdaStack extends Stack {
       action: 'lambda:InvokeFunction',
       sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:*/*/*/*`,
     });
+
+    // Grant permissions to consume messages from the SQS queue
+    props.myQueue.grantConsumeMessages(this.generateAI);
+
+    // Add SQS event source to the generateAI lambda
+    this.generateAI.addEventSource(new SqsEventSource(props.myQueue));
 
     // Output the lambda function ARN
     new CfnOutput(this, 'GenerateAIHandler', {
