@@ -16,7 +16,10 @@ const openai = new OpenAI({
 export const handler = async (event: SQSEvent) => {
   try {
     for (const record of event.Records) {
+      console.log(record);
       const messageBody = JSON.parse(record.body);
+
+      console.log('message body', messageBody);
       const {
         taskId,
         sessionId,
