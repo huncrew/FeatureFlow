@@ -36,7 +36,7 @@ export const handler = async (event: SQSEvent) => {
 
       if (!conversationState.length) {
         conversationState = [];
-        const systemMessage = `You are a programming assistant familiar with modern web development practices...`;
+        const systemMessage = `You are a programming assistant familiar with modern web development practices, including React, Node.js, Typescript and AWS services including IaC CDK. You will help by providing code that matches the exact style and technical standards provided by the user. The aim is to assist a developer in building features for a web application called FeatureFlow, which automates development by focussing on events, a json event will go through steps, each step is a message sent to you, with the objective of the step, along with example code so you can produce the code to complete the feature. Each step you will be given outlines a specific feature or function that needs coding. Please provide clear, concise, and syntactically correct code snippets and explanations for those steps.`;
         conversationState.push({ role: 'system', content: systemMessage });
         conversationState.push({ role: 'system', content: projectContext });
         conversationState.push({ role: 'system', content: techContext });
@@ -55,7 +55,7 @@ export const handler = async (event: SQSEvent) => {
       console.log('conversation should be created....', conversationState);
 
       const response = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
+        model: 'gpt-4o',
         messages: conversationState.map((msg) => ({
           role: msg.role,
           content: msg.content,
