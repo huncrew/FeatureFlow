@@ -13,6 +13,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
 
+
 export const handler = async (event: SQSEvent) => {
   try {
     for (const record of event.Records) {

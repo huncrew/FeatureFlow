@@ -9,8 +9,8 @@ import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 
 export interface LambdaStackProps extends StackProps {
   lambdaCodePath: string;
-  projectContextTable: Table; // DynamoDB table name for storing project context
-  myQueue: Queue; // Add this line
+  projectContextTable: Table; 
+  myQueue: Queue; 
 }
 
 export class LambdaStack extends Stack {
