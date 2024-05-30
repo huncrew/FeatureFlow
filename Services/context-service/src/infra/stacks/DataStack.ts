@@ -19,7 +19,7 @@ export class DataStack extends Stack {
         name: 'SK',
         type: AttributeType.STRING,
       },
-      billingMode: BillingMode.PAY_PER_REQUEST, // or PROVISIONED, based on your needs
+      billingMode: BillingMode.PAY_PER_REQUEST,
     });
   }
 }

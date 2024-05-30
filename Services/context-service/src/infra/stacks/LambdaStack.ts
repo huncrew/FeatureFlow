@@ -25,7 +25,6 @@ export class LambdaStack extends Stack {
     const queueUrl = props.myQueue.queueUrl;
 
     // PROJECT CONTEXT LAMBDA
-
     this.contextHandler = new NodejsFunction(this, 'ContextHandler', {
       entry: `${props.lambdaCodePath}/capture-project-context/index.ts`,
       environment: {
