@@ -122,7 +122,6 @@ export class ApiStack extends Stack {
     );
 
     // STEP STATUS CHECK
-    // STEP STATUS CHECK
     const stepStatusCheckResource =
       this.api.root.addResource('step-status-check');
     const sessionResource = stepStatusCheckResource
