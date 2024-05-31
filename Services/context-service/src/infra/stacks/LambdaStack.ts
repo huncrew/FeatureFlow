@@ -47,7 +47,6 @@ export class LambdaStack extends Stack {
     });
 
     // INITIATE STEP TASK LAMBDA FOR TASK ID
-
     this.stepCreate = new NodejsFunction(this, 'CreateStep', {
       entry: `${props.lambdaCodePath}/step-create/index.ts`,
       timeout: Duration.seconds(600),
